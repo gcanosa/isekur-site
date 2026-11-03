@@ -139,6 +139,29 @@ pre.sh .p{color:var(--pink);user-select:none}
 .k{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#ffffff05;font-size:15px;color:#d6d2ee}
 kbd{font:600 12.5px var(--mono);background:#1f1c35;border:1px solid #3a3660;border-bottom-width:3px;border-radius:6px;padding:2px 7px;color:#fff;white-space:nowrap}
 
+
+/* real screenshots */
+.gal-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.gal-tabs button{font:600 14px var(--mono);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#ffffff06;color:var(--muted);cursor:pointer}
+.gal-tabs button[aria-selected=true]{color:var(--fg);border-color:var(--pink);background:#ff5fd71a}
+.gal{position:relative;max-width:1000px;margin:0 auto}
+.gal img{width:100%;height:auto;display:block}
+.gal img:not(.on){position:absolute;inset:0;opacity:0;pointer-events:none}
+.gal img{transition:opacity .35s}
+.cap{text-align:center;color:var(--muted);font-size:15px;margin-top:6px}
+.browser{border-radius:12px;overflow:hidden;border:1px solid #ffffff1f;box-shadow:0 40px 100px -30px #000;background:#1d1b26}
+.browser .tbar span{font:12px var(--mono);background:#0f0e17;border-radius:7px;padding:4px 14px;color:#8d8aa6;transform:none}
+.browser img{display:block;width:100%;height:auto}
+.phone{position:absolute;right:-18px;bottom:-40px;width:31%;max-width:240px;border-radius:30px;border:7px solid #0a0910;outline:1px solid #ffffff2a;overflow:hidden;box-shadow:0 30px 80px -10px #000}
+.phone img{display:block;width:100%}
+.webwrap{position:relative;margin:10px 0 40px}
+@media (max-width:760px){.phone{display:none}}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media (max-width:900px){.duo{grid-template-columns:1fr}}
+.duo figure{margin:0}
+.duo figcaption{color:var(--muted);font-size:15px;text-align:center;margin-top:4px}
+.duo figcaption b{color:var(--fg)}
+
 /* support */
 .irc{margin-top:96px;border-radius:22px;padding:48px 32px;text-align:center;border:1px solid var(--line);
   background:radial-gradient(600px 240px at 50% 0,#ff5fd72a,transparent),linear-gradient(180deg,#1a1830,#110f1f)}
@@ -153,6 +176,7 @@ footer a{color:var(--muted);text-decoration:underline}
   <a class="logo" href="#">i<b>Sekur</b></a>
   <div class="links">
     <a href="#features">Features</a>
+    <a href="#themes">Themes</a>
     <a href="#webchat">Webchat</a>
     <a href="#security">Security</a>
     <a href="#install">Install</a>
@@ -216,6 +240,24 @@ footer a{color:var(--muted);text-decoration:underline}
   </div>
 </section>
 
+<section id="themes">
+  <div class="kicker">The real thing</div>
+  <h2>Same chat, six of the 35 themes.</h2>
+  <p class="lead">Screenshots of iSekur running in a terminal. A theme changes everything: the bars, the tabs, the nicklist, the timestamps, the nick colors, even the layout (mIRC puts <code>&lt;nicks&gt;</code> inline).</p>
+  <div class="gal-tabs" role="tablist"><button role="tab" aria-selected="true" data-g="mirc">mIRC</button><button role="tab" aria-selected="false" data-g="rose-pine">Rosé Pine</button><button role="tab" aria-selected="false" data-g="ayu">Ayu</button><button role="tab" aria-selected="false" data-g="neon">Neon</button><button role="tab" aria-selected="false" data-g="catppuccin-latte">Catppuccin Latte</button><button role="tab" aria-selected="false" data-g="dracula">Dracula</button></div>
+  <div class="gal" id="gal"><img class="on" data-g="mirc" src="img/chat-mirc.png" alt="iSekur in the mIRC theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1722" height="956"><img data-g="rose-pine" src="img/chat-rose-pine.png" alt="iSekur in the Rosé Pine theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1722" height="956"><img data-g="ayu" src="img/chat-ayu.png" alt="iSekur in the Ayu theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1722" height="956"><img data-g="neon" src="img/chat-neon.png" alt="iSekur in the Neon theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1722" height="956"><img data-g="catppuccin-latte" src="img/chat-catppuccin-latte.png" alt="iSekur in the Catppuccin Latte theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1722" height="956"><img data-g="dracula" src="img/chat-dracula.png" alt="iSekur in the Dracula theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1722" height="956"></div>
+</section>
+
+<section id="tools">
+  <div class="kicker">Built in</div>
+  <h2>Windows for everything, inside the terminal.</h2>
+  <p class="lead">No config file spelunking: every setting and every theme is a keystroke away.</p>
+  <div class="duo">
+    <figure><img class="shot" src="img/theme-picker.png" alt="The /theme picker previewing dayfox live over the chat" loading="lazy"><figcaption><b>/theme</b>: ↑↓ previews each theme live, type to filter, Enter keeps it</figcaption></figure>
+    <figure><img class="shot" src="img/settings.png" alt="The /set settings window with categories and values" loading="lazy"><figcaption><b>/set</b>: every key by category, / searches, e edits, Space toggles</figcaption></figure>
+  </div>
+</section>
+
 <section id="detach">
   <div class="split">
     <div class="txt">
@@ -236,11 +278,19 @@ footer a{color:var(--muted);text-decoration:underline}
   <div class="kicker">Webchat</div>
   <h2>The same session, on your phone.</h2>
   <p class="lead">Not a separate client: the browser mirrors the live terminal session, the way a bouncer would. <code>/web start</code> and log in.</p>
+  <div class="webwrap">
+    <div class="browser"><div class="tbar"><i></i><i></i><i></i><span>https://chat.example.org</span></div><img src="img/web-rose.png" alt="The iSekur webchat in the Rosé Pine theme: tab list, chat, nicklist, status bar and input line" loading="lazy"></div>
+    <div class="phone"><img src="img/web-phone.png" alt="The webchat on a phone" loading="lazy"></div>
+  </div>
   <div class="grid">
     <div class="card" style="--c:#7dcfff"><span class="ic">mirror</span><h3>Same everything</h3><p>The same tabs, nick and tab menus, input line, suggestions, status bar and theme colors as the terminal.</p></div>
     <div class="card" style="--c:#c792ea"><span class="ic">PWA</span><h3>Installs as an app</h3><p>Put it on the home screen or the dock, with notifications for highlights and private messages.</p></div>
     <div class="card" style="--c:#9ece6a"><span class="ic">login</span><h3>Locked down</h3><p>HTTPS + WebSocket, a PBKDF2 password hash and a lockout after failed tries.</p></div>
     <div class="card" style="--c:#ffcb6b"><span class="ic">⚙</span><h3>Settings in place</h3><p>⚙ edits every setting with switches and a theme list, + adds a server, ⇅ downloads DCC files, seedbox style.</p></div>
+  </div>
+  <div class="duo" style="margin-top:28px">
+    <figure><div class="browser"><div class="tbar"><i></i><i></i><i></i><span>mIRC theme</span></div><img src="img/web-mirc.png" alt="The webchat in the mIRC theme" loading="lazy"></div><figcaption>The <b>mIRC</b> theme in the browser…</figcaption></figure>
+    <figure><div class="browser"><div class="tbar"><i></i><i></i><i></i><span>⚙ Settings</span></div><img src="img/web-set.png" alt="The webchat settings dialog styled as Windows 95" loading="lazy"></div><figcaption>…down to Windows 95 dialogs. <b>⚙</b> edits every setting in place.</figcaption></figure>
   </div>
 </section>
 
@@ -378,10 +428,14 @@ document.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => {
     b.textContent = 'copied'; setTimeout(() => b.textContent = 'copy', 1400);
   });
 });
-document.querySelectorAll('[role=tab]').forEach(b => b.onclick = () => {
-  document.querySelectorAll('[role=tab]').forEach(x => {
+document.querySelectorAll('#install [role=tab]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#install [role=tab]').forEach(x => {
     x.setAttribute('aria-selected', x === b); document.getElementById(x.dataset.p).hidden = x !== b;
   });
+});
+document.querySelectorAll('#themes [role=tab]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#themes [role=tab]').forEach(x => x.setAttribute('aria-selected', x === b));
+  document.querySelectorAll('#gal img').forEach(i => i.classList.toggle('on', i.dataset.g === b.dataset.g));
 });
 </script>
 </body>
