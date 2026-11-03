@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iSekur — a colorful terminal IRC client</title>
+<meta name="description" content="iSekur: a small, very colorful terminal IRC client in C++17 with a built-in webchat that mirrors your live session in a browser, bouncer style.">
+<meta property="og:title" content="iSekur — a colorful terminal IRC client">
+<meta property="og:description" content="35 themes, IRCv3, detach/attach like tmux, a live webchat, end-to-end encrypted queries and channels.">
+<meta property="og:image" content="https://raw.githubusercontent.com/gcanosa/iSekur/main/docs/screenshot.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2312001f'/><text x='16' y='23' font-family='monospace' font-weight='700' font-size='19' text-anchor='middle' fill='%23ff5fd7'>i</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,800;1,400&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0a14; --bg2:#12101f; --card:#161427; --line:#2a2742; --fg:#e8e6f5; --muted:#9a96b8;
+  --pink:#ff5fd7; --violet:#c792ea; --cyan:#7dcfff; --green:#9ece6a; --amber:#ffcb6b;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace; --sans:"Space Grotesk",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 var(--sans);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(900px 500px at 15% -5%, #c792ea33, transparent 60%),
+    radial-gradient(800px 500px at 95% 10%, #ff5fd722, transparent 60%),
+    radial-gradient(700px 600px at 50% 110%, #7dcfff18, transparent 60%),
+    linear-gradient(#ffffff06 1px, transparent 1px) 0 0/100% 32px;}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+code,kbd,pre{font-family:var(--mono)}
+code{font-size:.88em;background:#ffffff0d;border:1px solid var(--line);padding:.08em .4em;border-radius:6px;color:#f3e8ff}
+.wrap{max-width:1160px;margin:0 auto;padding:0 16px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:#0b0a14b8;border-bottom:1px solid #ffffff0f}
+nav .wrap{display:flex;align-items:center;gap:22px;height:58px}
+.logo{font:800 20px var(--mono);color:var(--fg);letter-spacing:-.5px}
+.logo b{color:var(--pink)}
+nav .links{display:flex;gap:20px;margin-left:auto;font-size:15px}
+nav .links a{color:var(--muted)}
+nav .links a:hover{color:var(--fg);text-decoration:none}
+.gh{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:var(--fg)!important;font-size:14px}
+.gh svg{width:16px;height:16px;fill:currentColor}
+@media (max-width:760px){nav .links a:not(.gh){display:none}}
+
+/* hero */
+.hero{padding:84px 0 40px;text-align:center}
+.badge{display:inline-flex;gap:8px;align-items:center;font:500 13px var(--mono);color:var(--muted);border:1px solid var(--line);background:#ffffff08;padding:5px 12px;border-radius:999px}
+.badge i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+h1{font:800 clamp(56px,11vw,124px)/1 var(--mono);letter-spacing:-4px;margin:22px 0 8px;
+  background:linear-gradient(100deg,#ff5fd7 0%,#c792ea 35%,#82aaff 65%,#7dcfff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 40px #c792ea55)}
+h1 .cur{display:inline-block;width:.42em;height:.72em;margin-left:.1em;background:var(--cyan);vertical-align:-.04em;animation:blink 1.1s steps(1) infinite;-webkit-text-fill-color:initial}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){h1 .cur{animation:none}}
+.tag{font-size:clamp(19px,2.6vw,24px);color:#d6d2ee;max-width:760px;margin:0 auto}
+.tag em{font-style:normal;color:var(--pink)}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:30px 0 10px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:12px;font:600 15px var(--sans);border:1px solid var(--line);color:var(--fg);background:#ffffff08;transition:transform .15s,border-color .15s}
+.btn:hover{text-decoration:none;transform:translateY(-2px);border-color:#ffffff40}
+.btn.primary{background:linear-gradient(100deg,#ff5fd7,#c792ea);color:#16001a;border:0;box-shadow:0 10px 30px -10px #ff5fd7aa}
+.copy{display:flex;align-items:center;gap:12px;margin:18px auto 0;width:max-content;max-width:100%;font:14px var(--mono);background:#06050c;border:1px solid var(--line);border-radius:12px;padding:10px 10px 10px 16px;color:#d6d2ee}
+.copy span{overflow:auto;white-space:nowrap}
+.copy span::before{content:"$ ";color:var(--pink)}
+.copy button{flex:none;font:600 12px var(--mono);background:#ffffff10;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.copy button:hover{background:#ffffff20}
+
+/* live terminal */
+.stage{margin:50px auto 0;max-width:1000px}
+.term{border-radius:14px;overflow:hidden;border:1px solid #ffffff1a;box-shadow:0 40px 120px -30px #000,0 0 0 1px #00000080,0 30px 80px -40px var(--glow,#c792ea);transition:box-shadow .4s}
+.tbar{display:flex;align-items:center;gap:8px;padding:11px 14px;background:#1d1b26;border-bottom:1px solid #00000060}
+.tbar i{width:12px;height:12px;border-radius:50%}
+.tbar i:nth-child(1){background:#ff5f57}.tbar i:nth-child(2){background:#febc2e}.tbar i:nth-child(3){background:#28c840}
+.tbar span{margin:0 auto;font:13px var(--sans);color:#a9a7b8;transform:translateX(-26px)}
+.scr{font:14.5px/1.55 var(--mono);background:var(--t-bg);color:var(--t-fg);transition:background .35s,color .35s;text-align:left}
+.scr *{transition:background-color .35s,color .35s}
+.row{white-space:pre;overflow:hidden;padding:0 10px}
+.body{display:grid;grid-template-columns:1fr 150px}
+.chat{padding:8px 0;min-width:0}
+.line{display:grid;grid-template-columns:52px 104px 1fr;gap:0 10px;padding:0 10px}
+.line .n{text-align:right;border-right:1px solid var(--t-sep);padding-right:10px;white-space:nowrap;overflow:hidden}
+.line .m{white-space:normal;word-break:break-word}
+.nick{border-left:1px solid var(--t-sep);padding:8px 12px;white-space:nowrap;overflow:hidden}
+.newm{display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--t-marker)}
+.newm::before{content:"";width:22px;border-top:1px solid}
+.newm::after{content:"";flex:1;border-top:1px solid}
+.b{font-weight:700}.it{font-style:italic}
+@media (max-width:760px){.body{grid-template-columns:1fr}.nick{display:none}.line{grid-template-columns:42px 70px 1fr;font-size:12.5px}.scr{font-size:12.5px}.line .t{overflow:hidden}}
+.themes{margin-top:22px;text-align:center}
+.themes p{font:13px var(--mono);color:var(--muted);margin:0 0 12px}
+.themes p b{color:var(--fg)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.chip{display:inline-flex;align-items:center;gap:7px;font:12.5px var(--mono);padding:5px 10px 5px 6px;border-radius:999px;border:1px solid var(--line);background:#ffffff06;color:var(--muted);cursor:pointer}
+.chip:hover{color:var(--fg);border-color:#ffffff40}
+.chip[aria-pressed=true]{color:var(--fg);border-color:var(--pink);background:#ff5fd71a}
+.sw{display:inline-flex;border-radius:999px;overflow:hidden;outline:1px solid #ffffff22}
+.sw i{width:7px;height:14px}
+
+/* sections */
+section{padding:96px 0 0}
+.kicker{font:600 13px var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--pink)}
+h2{font:700 clamp(32px,4.5vw,48px)/1.1 var(--sans);letter-spacing:-1px;margin:10px 0 14px}
+.lead{color:var(--muted);font-size:19px;max-width:720px;margin:0 0 40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:linear-gradient(180deg,#1a1830,#141225);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(400px 120px at 0 0,var(--c,#c792ea)18,transparent)}
+.card .ic{font:700 15px var(--mono);color:var(--c,var(--violet));background:color-mix(in srgb,var(--c,#c792ea) 14%,transparent);border:1px solid color-mix(in srgb,var(--c,#c792ea) 35%,transparent);display:inline-block;padding:4px 10px;border-radius:8px;margin-bottom:14px}
+.card h3{margin:0 0 8px;font:700 20px var(--sans)}
+.card p{margin:0;color:var(--muted);font-size:15.5px}
+
+.split{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center}
+.split.rev{grid-template-columns:1.15fr 1fr}
+.split.rev .txt{order:2}
+@media (max-width:900px){.split,.split.rev{grid-template-columns:1fr}.split.rev .txt{order:0}}
+.shot{width:100%;height:auto;border-radius:14px;display:block;filter:drop-shadow(0 30px 60px #000a)}
+ul.ticks{list-style:none;padding:0;margin:0}
+ul.ticks li{padding:7px 0 7px 30px;position:relative;color:#d6d2ee}
+ul.ticks li::before{content:"›";position:absolute;left:6px;top:4px;font:700 20px var(--mono);color:var(--pink)}
+
+pre.sh{background:#06050c;border:1px solid var(--line);border-radius:14px;padding:18px 20px;font-size:14px;line-height:1.75;overflow:auto;margin:0;color:#d6d2ee}
+pre.sh .c{color:#6b6790}
+pre.sh .p{color:var(--pink);user-select:none}
+
+/* install */
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{font:600 14px var(--mono);padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:#ffffff06;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected=true]{color:#16001a;background:var(--violet);border-color:var(--violet)}
+.panel[hidden]{display:none}
+.dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:14px}
+.dl a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#ffffff06;color:var(--fg)}
+.dl a:hover{border-color:var(--cyan);text-decoration:none}
+.dl small{display:block;color:var(--muted);font:12px var(--mono)}
+
+/* keys */
+.keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.k{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#ffffff05;font-size:15px;color:#d6d2ee}
+kbd{font:600 12.5px var(--mono);background:#1f1c35;border:1px solid #3a3660;border-bottom-width:3px;border-radius:6px;padding:2px 7px;color:#fff;white-space:nowrap}
+
+/* support */
+.irc{margin-top:96px;border-radius:22px;padding:48px 32px;text-align:center;border:1px solid var(--line);
+  background:radial-gradient(600px 240px at 50% 0,#ff5fd72a,transparent),linear-gradient(180deg,#1a1830,#110f1f)}
+.irc h2{margin-top:0}
+footer{padding:56px 0 48px;color:var(--muted);font-size:14px;text-align:center}
+footer a{color:var(--muted);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#">i<b>Sekur</b></a>
+  <div class="links">
+    <a href="#features">Features</a>
+    <a href="#webchat">Webchat</a>
+    <a href="#security">Security</a>
+    <a href="#install">Install</a>
+    <a class="gh" href="https://github.com/gcanosa/iSekur"><svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero wrap">
+  <span class="badge"><i></i><span id="ver">latest release</span> · GPL-3.0 · C++17</span>
+  <h1>iSekur<span class="cur"></span></h1>
+  <p class="tag">A small, <em>very colorful</em> terminal IRC client, with a built-in webchat that mirrors your live session in a browser, bouncer style.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Get iSekur →</a>
+    <a class="btn" href="https://github.com/gcanosa/iSekur">Source on GitHub</a>
+  </div>
+  <div class="copy"><span id="brew">brew install gcanosa/isekur/isekur</span><button data-copy="brew">copy</button></div>
+
+  <div class="stage">
+    <div class="term" id="term">
+      <div class="tbar"><i></i><i></i><i></i><span>isekur</span></div>
+      <div class="scr" id="scr">
+        <div class="row" data-c="topic">iSekur <b>colorful</b> terminal IRC client | <b>35 themes</b> | github.com/gcanosa/iSekur</div>
+        <div class="row" data-c="tabbar"><span data-c="tab_home" class="b"> 1:cmd </span> <span data-c="tab_server"> 2:SekurNet </span> <span data-c="tab_active"> 3:#isekur </span> <span data-c="tab_data"> 4:#linux </span> <span data-c="tab_msg"> 5:#retro </span> <span data-c="tab_hilight"> 6:#secret 🔒</span></div>
+        <div class="body">
+          <div class="chat" id="chat"></div>
+          <div class="nick" data-c="nicklist">
+            <div data-c="nicklist_title" class="it">9 users</div>
+            <div data-c="nicklist_op">@morpheus</div>
+            <div data-c="nicklist_voice">+niobe</div>
+            <div data-c="nicklist_voice">+tank</div>
+            <div> apoc</div><div> dozer</div><div> kernelpanic</div><div> mouse</div><div> neo</div><div> switch</div>
+          </div>
+        </div>
+        <div class="row" data-c="status">[<span data-c="status_hi">17:32</span>] [<span data-c="status_hi">neo</span>] [<span data-c="status_hi">3:SekurNet/#isekur(+nt)</span>] [Act: <span data-c="tab_hilight">1</span>,<span data-c="tab_data">2</span>,<span data-c="tab_msg">5</span>]</div>
+        <div class="row"><span data-c="input_prompt">[#isekur]</span> /theme <span id="tname">default</span><span class="cur2">▌</span></div>
+      </div>
+    </div>
+    <div class="themes">
+      <p>Click a theme: this is <b>live</b>, colored from iSekur's own <code>themes/*.theme</code> files.</p>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="features">
+  <div class="kicker">Features</div>
+  <h2>Everything you want from IRC.<br>Nothing you have to fight.</h2>
+  <p class="lead">One small binary, OpenSSL and a config file it writes for you. A first-steps guide opens on the first start.</p>
+  <div class="grid">
+    <div class="card" style="--c:#ff5fd7"><span class="ic">35 themes</span><h3>Truly colorful</h3><p>24-bit color themes, dark and light, from neon and dracula to the classic mIRC look, with a 256-color fallback. <code>/theme</code> opens a live picker.</p></div>
+    <div class="card" style="--c:#7dcfff"><span class="ic">Alt+D</span><h3>Detach &amp; attach like tmux</h3><p>Leave it running, come back from any terminal or SSH login with <code>isekur --attach</code>. A dropped connection detaches instead of quitting.</p></div>
+    <div class="card" style="--c:#9ece6a"><span class="ic">IRCv3</span><h3>Modern IRC</h3><p>TLS with verification, CAP 302, SASL PLAIN / SCRAM-SHA-256 / EXTERNAL, server-time, echo-message, chathistory catch-up and more.</p></div>
+    <div class="card" style="--c:#ffcb6b"><span class="ic">webchat</span><h3>Your session in a browser</h3><p>HTTPS + WebSocket mirror of the live client. Installs as an app, with notifications for highlights and private messages.</p></div>
+    <div class="card" style="--c:#c792ea"><span class="ic">🔒 e2e</span><h3>Encrypted queries &amp; channels</h3><p>AES-256-GCM between iSekur users, with a key from scrypt. A lock on every encrypted line and tab.</p></div>
+    <div class="card" style="--c:#ff9e64"><span class="ic">/shell</span><h3>A real terminal in a tab</h3><p>vim, top and ssh run in a tab, behind a PAM login. <code>/attach host</code> brings another machine's iSekur in live.</p></div>
+    <div class="card" style="--c:#82aaff"><span class="ic">mouse</span><h3>Click everything</h3><p>Tabs, activity numbers, nicks, links (OSC 8), right-click menus, wheel scrolling, drag to copy through OSC 52.</p></div>
+    <div class="card" style="--c:#f7768e"><span class="ic">@ops</span><h3>Channel op tools</h3><p><code>/lockdown</code>, <code>/kickban</code>, <code>/tempban</code>, mass op/voice/kick, <code>/chanstats</code>, <code>/topicrotate</code>, and a <code>*snotices</code> tab for opers.</p></div>
+    <div class="card" style="--c:#38d9a9"><span class="ic">more</span><h3>The small things</h3><p>Flood-safe pastes, <code>/grep</code> through the scrollback, a "new" marker, highlights, DCC with resume, Twitch chat, logs, a CPU/battery status bar.</p></div>
+  </div>
+</section>
+
+<section id="detach">
+  <div class="split">
+    <div class="txt">
+      <div class="kicker">Always on</div>
+      <h2>Close the laptop.<br>Stay in the channel.</h2>
+      <p class="lead">The IRC side lives in a background process and your terminal is only attached to it. Run several side by side, one config each.</p>
+    </div>
+    <pre class="sh"><span class="p">$ </span>isekur              <span class="c"># start, or attach if it's running</span>
+  <span class="c">Alt+D / /detach     # back to the shell, still connected</span>
+<span class="p">$ </span>isekur --attach     <span class="c"># from this or any other terminal</span>
+<span class="p">$ </span>isekur --daemon     <span class="c"># headless; attach later</span>
+<span class="p">$ </span>isekur --list       <span class="c"># what's running, and how to attach</span>
+  <span class="c">/attach host        # another machine's iSekur, in a tab</span></pre>
+  </div>
+</section>
+
+<section id="webchat">
+  <div class="kicker">Webchat</div>
+  <h2>The same session, on your phone.</h2>
+  <p class="lead">Not a separate client: the browser mirrors the live terminal session, the way a bouncer would. <code>/web start</code> and log in.</p>
+  <div class="grid">
+    <div class="card" style="--c:#7dcfff"><span class="ic">mirror</span><h3>Same everything</h3><p>The same tabs, nick and tab menus, input line, suggestions, status bar and theme colors as the terminal.</p></div>
+    <div class="card" style="--c:#c792ea"><span class="ic">PWA</span><h3>Installs as an app</h3><p>Put it on the home screen or the dock, with notifications for highlights and private messages.</p></div>
+    <div class="card" style="--c:#9ece6a"><span class="ic">login</span><h3>Locked down</h3><p>HTTPS + WebSocket, a PBKDF2 password hash and a lockout after failed tries.</p></div>
+    <div class="card" style="--c:#ffcb6b"><span class="ic">⚙</span><h3>Settings in place</h3><p>⚙ edits every setting with switches and a theme list, + adds a server, ⇅ downloads DCC files, seedbox style.</p></div>
+  </div>
+</section>
+
+<section id="security">
+  <div class="split">
+    <div class="txt">
+      <div class="kicker">Security</div>
+      <h2>Private by default.</h2>
+      <ul class="ticks">
+        <li><code>/e2e nick</code> or <code>/e2e #chan</code>: AES-256-GCM, keys kept in memory</li>
+        <li><code>/lock on</code>: a master password before any tab, log or message</li>
+        <li><code>/shell</code> checks your login through PAM and is never reachable from the web or IRC</li>
+        <li>TLS certificate verification and SASL out of the box</li>
+      </ul>
+    </div>
+    <img class="shot" src="https://raw.githubusercontent.com/gcanosa/iSekur/main/docs/e2e.png" alt="An encrypted channel with a lock on the tab and on every line" >
+  </div>
+</section>
+
+<section id="install">
+  <div class="kicker">Install</div>
+  <h2>Up and running in a minute.</h2>
+  <p class="lead">macOS and Linux, plus FreeBSD and Cygwin from source.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-p="p-brew">Homebrew</button>
+    <button role="tab" aria-selected="false" data-p="p-dl">Download</button>
+    <button role="tab" aria-selected="false" data-p="p-src">Build</button>
+  </div>
+  <div class="panel" id="p-brew"><pre class="sh"><span class="p">$ </span>brew install gcanosa/isekur/isekur
+<span class="p">$ </span>isekur              <span class="c"># start it</span>
+<span class="p">$ </span>man isekur          <span class="c"># the manual</span>
+<span class="p">$ </span>brew upgrade isekur <span class="c"># update to the latest release</span></pre></div>
+  <div class="panel" id="p-dl" hidden>
+    <pre class="sh"><span class="p">$ </span>curl -L https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz | tar xz
+<span class="p">$ </span>sudo isekur-macos-arm64/install.sh     <span class="c"># /usr/local</span></pre>
+    <div class="dl">
+      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz">macOS<small>Apple silicon</small></a>
+      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz">Linux<small>x86_64 · libssl3</small></a>
+      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-arm64.tar.gz">Linux<small>arm64 · libssl3</small></a>
+      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-src.tar.gz">Source<small>tar.gz</small></a>
+    </div>
+  </div>
+  <div class="panel" id="p-src" hidden><pre class="sh"><span class="c"># needs a C++17 compiler, GNU make, OpenSSL 1.1+/LibreSSL and PAM</span>
+<span class="p">$ </span>git clone https://github.com/gcanosa/iSekur && cd iSekur
+<span class="p">$ </span>make                <span class="c"># gmake on *BSD</span>
+<span class="p">$ </span>make test
+<span class="p">$ </span>sudo make install   <span class="c"># /usr/local</span></pre></div>
+</section>
+
+<section id="keys">
+  <div class="kicker">Keys</div>
+  <h2>Fast under your fingers.</h2>
+  <p class="lead">Rebind any of them in the <code>[keys]</code> section of the config.</p>
+  <div class="keys">
+    <div class="k">Go to tab N <span><kbd>Alt</kbd> <kbd>1–9</kbd></span></div>
+    <div class="k">Next active tab <span><kbd>Ctrl</kbd> <kbd>A</kbd></span></div>
+    <div class="k">Detach <span><kbd>Alt</kbd> <kbd>D</kbd></span></div>
+    <div class="k">Find a tab <span><kbd>Ctrl</kbd> <kbd>G</kbd></span></div>
+    <div class="k">Next server <span><kbd>Ctrl</kbd> <kbd>X</kbd></span></div>
+    <div class="k">Nicklist <span><kbd>F2</kbd></span></div>
+    <div class="k">Topic bar <span><kbd>Ctrl</kbd> <kbd>T</kbd></span></div>
+    <div class="k">Mouse on/off <span><kbd>F3</kbd></span></div>
+    <div class="k">Complete <span><kbd>Tab</kbd></span></div>
+  </div>
+</section>
+
+<div class="irc">
+  <div class="kicker">Come say hi</div>
+  <h2>#iSekur on irc.sekurnet.org</h2>
+  <p class="lead" style="margin:0 auto 26px">Questions, bugs and ideas, on iSekur's sponsored network. Or open a GitHub issue.</p>
+  <div class="copy"><span id="srv">/server irc.sekurnet.org 6697 -tls -name sekurnet</span><button data-copy="srv">copy</button></div>
+  <div class="cta"><a class="btn" href="https://github.com/gcanosa/iSekur/issues">GitHub issues</a></div>
+</div>
+
+</main>
+
+<footer class="wrap">
+  iSekur is free software under the <a href="https://github.com/gcanosa/iSekur/blob/main/LICENSE">GPL-3.0-or-later</a>. © 2026 Gerardo Canosa.
+</footer>
+
+<script>
+// The chat lines of the live demo: [time, nick (or event), nick color key, text, text color key]
+const LINES = [
+  ['-->', 'join', 'You have joined #isekur', 'join'],
+  ['--', 'info', 'Topic: iSekur colorful terminal IRC client', 'info'],
+  ['apoc', 0, 'anyone tried /e2e on a channel yet?'],
+  ['mouse', 1, 'yes, same password and every line gets a 🔒'],
+  ['neo', 'msg_self', 'trinity and I use it in #secret, works great'],
+  ['-->', 'join', 'kernelpanic (kp@zion.net) has joined #isekur', 'join'],
+  'new',
+  ['+tank', 2, 'just pushed the read marker and daily log rotation'],
+  ['switch', 3, 'CI is green on linux, macos, freebsd and cygwin'],
+  ['*', 'action', 'dozer tries the webchat from his phone', 'action'],
+  ['@morpheus', 'hilight', 'neo: the neon theme looks great on your screen?'],
+  ['apoc', 0, 'yes! and /grep finds anything in the scrollback'],
+  ['*', 'action', 'neo detaches with Alt+D and goes for lunch', 'action'],
+];
+const chat = document.getElementById('chat');
+chat.innerHTML = LINES.map(l => l === 'new' ? '<div class="newm">new</div>' :
+  `<div class="line"><span class="t" data-c="timestamp">17:32</span><span class="n"><span ${typeof l[1]=='number'?`data-p="${l[1]}"`:`data-c="${l[1]}"`}>${l[0]}</span></span><span class="m"${l[3]?` data-c="${l[3]}"`:''}>${l[2]}</span></div>`).join('');
+
+let T = {};
+function paint(name) {
+  const t = T[name]; if (!t) return;
+  const s = document.getElementById('scr'), r = s.style;
+  r.setProperty('--t-bg', t.bg); r.setProperty('--t-fg', t.fg);
+  r.setProperty('--t-sep', (t.separator||[t.fg+'44'])[0]);
+  r.setProperty('--t-marker', (t.marker||t.tab_hilight||[t.fg])[0]);
+  s.querySelectorAll('[data-c]').forEach(e => {
+    const v = t[e.dataset.c]; e.style.color = v ? v[0] : ''; e.style.backgroundColor = v && v[1] && v[1][0]=='#' ? v[1] : '';
+    e.classList.toggle('b', !!(v && v.includes('b')));
+  });
+  s.querySelectorAll('[data-p]').forEach(e => e.style.color = t.pal[e.dataset.p % t.pal.length] || t.fg);
+  document.getElementById('tname').textContent = name;
+  document.getElementById('term').style.setProperty('--glow', (t.tab_active||[,t.fg])[1] || t.fg);
+  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.t === name));
+}
+fetch('themes.json').then(r => r.json()).then(j => {
+  T = j;
+  const order = Object.keys(j).sort((a, b) => (a=='default'?-1:b=='default'?1:0) || a.localeCompare(b));
+  document.getElementById('chips').innerHTML = order.map(n => {
+    const t = j[n], cols = [t.bg, (t.tab_active||[])[1], (t.msg_self||[])[0], (t.join||[])[0], (t.marker||[])[0]].filter(Boolean);
+    return `<button class="chip" data-t="${n}"><span class="sw">${cols.map(c=>`<i style="background:${c}"></i>`).join('')}</span>${n}</button>`;
+  }).join('');
+  document.getElementById('chips').onclick = e => { const c = e.target.closest('.chip'); if (c) paint(c.dataset.t); };
+  paint('default');
+});
+
+// latest release tag in the badge
+fetch('https://api.github.com/repos/gcanosa/iSekur/releases/latest').then(r => r.ok && r.json())
+  .then(j => { if (j && j.tag_name) document.getElementById('ver').textContent = j.tag_name + ' is out'; }).catch(() => {});
+
+document.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => {
+  navigator.clipboard.writeText(document.getElementById(b.dataset.copy).textContent).then(() => {
+    b.textContent = 'copied'; setTimeout(() => b.textContent = 'copy', 1400);
+  });
+});
+document.querySelectorAll('[role=tab]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('[role=tab]').forEach(x => {
+    x.setAttribute('aria-selected', x === b); document.getElementById(x.dataset.p).hidden = x !== b;
+  });
+});
+</script>
+</body>
+</html>
