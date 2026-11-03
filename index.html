@@ -3,12 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iSekur — a colorful terminal IRC client</title>
-<meta name="description" content="iSekur: a small, very colorful terminal IRC client in C++17 with a built-in webchat that mirrors your live session in a browser, bouncer style.">
-<meta property="og:title" content="iSekur — a colorful terminal IRC client">
-<meta property="og:description" content="35 themes, IRCv3, detach/attach like tmux, a live webchat, end-to-end encrypted queries and channels.">
-<meta property="og:image" content="https://raw.githubusercontent.com/gcanosa/iSekur/main/docs/screenshot.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2312001f'/><text x='16' y='23' font-family='monospace' font-weight='700' font-size='19' text-anchor='middle' fill='%23ff5fd7'>i</text></svg>">
+<title>iSekur — open source terminal IRC client with a webchat</title>
+<meta name="description" content="iSekur is a free, open source terminal IRC client for macOS and Linux: 35 color themes, IRCv3 and SASL, detach and attach like tmux, a built-in webchat that mirrors your session (bouncer style), and end-to-end encrypted chats.">
+<meta name="keywords" content="IRC client, terminal IRC client, open source IRC, IRCv3, IRC bouncer, webchat, TUI, macOS, Linux, C++">
+<meta name="author" content="Gerardo Canosa">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://gcanosa.github.io/isekur-site/">
+<meta name="theme-color" content="#0b0a14">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="iSekur">
+<meta property="og:url" content="https://gcanosa.github.io/isekur-site/">
+<meta property="og:title" content="iSekur — open source terminal IRC client">
+<meta property="og:description" content="35 themes, IRCv3, detach/attach like tmux, a live webchat, end-to-end encrypted queries and channels. Free for macOS and Linux.">
+<meta property="og:image" content="https://gcanosa.github.io/isekur-site/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="iSekur running in a terminal with the Rosé Pine theme">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="iSekur — open source terminal IRC client">
+<meta name="twitter:description" content="35 themes, IRCv3, detach/attach like tmux, a live webchat and end-to-end encryption.">
+<meta name="twitter:image" content="https://gcanosa.github.io/isekur-site/img/og.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"iSekur",
+"description":"A small, very colorful open source terminal IRC client in C++17 with a built-in webchat that mirrors your live session in a browser, bouncer style.",
+"url":"https://gcanosa.github.io/isekur-site/","applicationCategory":"CommunicationApplication","operatingSystem":"macOS, Linux, FreeBSD",
+"license":"https://www.gnu.org/licenses/gpl-3.0.html","isAccessibleForFree":true,
+"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+"downloadUrl":"https://github.com/gcanosa/iSekur/releases/latest","installUrl":"https://github.com/gcanosa/iSekur#install",
+"codeRepository":"https://github.com/gcanosa/iSekur","programmingLanguage":"C++",
+"screenshot":"https://gcanosa.github.io/isekur-site/img/chat-rose-pine.png",
+"author":{"@type":"Person","name":"Gerardo Canosa","url":"https://github.com/gcanosa"}}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,800;1,400&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
@@ -162,6 +188,7 @@ kbd{font:600 12.5px var(--mono);background:#1f1c35;border:1px solid #3a3660;bord
 .duo figcaption{color:var(--muted);font-size:15px;text-align:center;margin-top:4px}
 .duo figcaption b{color:var(--fg)}
 
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* support */
 .irc{margin-top:96px;border-radius:22px;padding:48px 32px;text-align:center;border:1px solid var(--line);
   background:radial-gradient(600px 240px at 50% 0,#ff5fd72a,transparent),linear-gradient(180deg,#1a1830,#110f1f)}
@@ -186,7 +213,7 @@ footer a{color:var(--muted);text-decoration:underline}
 
 <header class="hero wrap">
   <span class="badge"><i></i><span id="ver">latest release</span> · GPL-3.0 · C++17</span>
-  <h1>iSekur<span class="cur"></span></h1>
+  <h1>iSekur<span class="sr"> — open source terminal IRC client</span><span class="cur"></span></h1>
   <p class="tag">A small, <em>very colorful</em> terminal IRC client, with a built-in webchat that mirrors your live session in a browser, bouncer style.</p>
   <div class="cta">
     <a class="btn primary" href="#install">Get iSekur →</a>
