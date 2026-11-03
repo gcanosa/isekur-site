@@ -104,6 +104,7 @@ section{padding:96px 0 0}
 h2{font:700 clamp(32px,4.5vw,48px)/1.1 var(--sans);letter-spacing:-1px;margin:10px 0 14px}
 .lead{color:var(--muted);font-size:19px;max-width:720px;margin:0 0 40px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+#webchat .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .card{background:linear-gradient(180deg,#1a1830,#141225);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(400px 120px at 0 0,var(--c,#c792ea)18,transparent)}
 .card .ic{font:700 15px var(--mono);color:var(--c,var(--violet));background:color-mix(in srgb,var(--c,#c792ea) 14%,transparent);border:1px solid color-mix(in srgb,var(--c,#c792ea) 35%,transparent);display:inline-block;padding:4px 10px;border-radius:8px;margin-bottom:14px}
