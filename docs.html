@@ -392,7 +392,7 @@ announce_back = on</pre>
   <li><b>seen</b>: <code>/seen nick</code> tells when and where someone was last seen talking, joining, leaving, quitting or changing nick. With <code>/plugin set seen@sekurnet/#isekur reply on</code> it also answers <code>!seen nick</code> in that channel, once every 10 seconds at most. To other people it only tells what happened in that same channel, and only when for anything else. It remembers the 5000 most recent nicks (<code>max</code>).</li>
 </ul>
 <h3>Auto-away is a plugin now</h3>
-<p>Up to 0.5, auto-away was built in, with the <code>auto_away</code>, <code>auto_away_idle</code>, <code>away_message</code> and <code>away_announce</code> settings. It is now the <b>autoaway</b> plugin. <code>/plugin install autoaway</code> moves those settings from <code>[general]</code> and each <code>[server.name]</code> into <code>[plugin.autoaway]</code> and <code>[plugin.autoaway@name]</code>, then deletes the old keys from the config. Until you install it, nobody sets you away, and iSekur reminds you of this at startup. Its options are <code>idle</code> (minutes without typing; 0, the default, means only when nothing is attached), <code>message</code>, <code>announce_away</code> (<code>/me is away: &lt;message&gt;</code> in your channels) and <code>announce_back</code> (<code>/me is back</code>). Both announcements are off by default, and each can be turned on or off on its own, everywhere, per network or per channel. The old <code>away_announce</code> did both, so installing turns both on where it was on. Like any plugin, autoaway itself can be on in some networks and off in others:</p>
+<p>Up to 0.5, auto-away was built in, with the <code>auto_away</code>, <code>auto_away_idle</code>, <code>away_message</code> and <code>away_announce</code> settings. It is now the <b>autoaway</b> plugin. <code>/plugin install autoaway</code> moves those settings from <code>[general]</code> and each <code>[server.name]</code> into <code>[plugin.autoaway]</code> and <code>[plugin.autoaway@name]</code>, then deletes the old keys from the config. Until you install it, nobody sets you away, and iSekur reminds you of this at startup. Its options are <code>idle</code> (in minutes without typing; 0, the default, means only when nothing is attached, after 30 seconds), <code>message</code>, <code>announce_away</code> (<code>/me is away: &lt;message&gt;</code> in your channels) and <code>announce_back</code> (<code>/me is back</code>). Both announcements are off by default, and each can be turned on or off on its own, everywhere, per network or per channel. The old <code>away_announce</code> did both, so installing turns both on where it was on. Like any plugin, autoaway itself can be on in some networks and off in others:</p>
 <pre>/plugin disable autoaway@work                         <span class="c"># never away by itself on the "work" network</span>
 /plugin set autoaway announce_back on                <span class="c"># "/me is back" everywhere...</span>
 /plugin set autoaway@sekurnet/#isekur announce_back off   <span class="c"># ...but not in #isekur</span></pre>
@@ -401,7 +401,7 @@ announce_back = on</pre>
 <p>A plugin is a single file, <code>~/.config/isekur/plugins/&lt;name&gt;.lua</code>. The name can use letters, digits, <code>_</code> and <code>-</code>. The file runs once when the plugin loads, and that first run is where it declares its settings, its commands and the events it handles. Here is a complete one:</p>
 <pre><span class="c">-- version: 1.0</span>
 <span class="c">-- ~/.config/isekur/plugins/hello.lua</span>
-isekur.setting("greeting", "Hello", "c")     <span class="c">-- an option: default "Hello", settable per channel</span>
+isekur.setting("greeting", "Hello", "c", "what /hello says first")  <span class="c">-- default "Hello", per channel</span>
 
 <span class="c">-- /hello [nick]</span>
 isekur.command("hello", "[nick]", function(args, srv, target)
@@ -416,7 +416,7 @@ isekur.on("message", function(e)
     isekur.exec(e.srv, e.target, "/me waves at " .. e.nick)
   end
 end)</pre>
-<p>The <code>-- version:</code> line is how iSekur tells a newer version in the catalog (an update) from a file you changed yourself (same version, different contents, shown as edited). To try it, run <code>/plugin enable hello</code>, then type <code>/hello bob</code> in a channel. After you edit the file, run <code>/plugin reload hello</code>. <code>print(...)</code> writes <code>[hello] ...</code> to the main window, which is handy while you're debugging.</p>
+<p>The <code>-- version:</code> line is how iSekur tells a newer version in the catalog (an update) from a file you changed yourself (same version, different contents, shown as edited). To try it, run <code>/plugin enable hello</code>, then type <code>/hello bob</code> in a channel. After you edit the file, run <code>/plugin reload hello</code>. <code>print(...)</code> writes to the main window, which is handy while you're debugging. Every line a plugin prints starts with a badge with its name, in the theme's <code>plugin</code> colors, and <code>/plugin</code>'s own messages have a <code>plugin</code> one, so with many plugins you can always tell what said what.</p>
 <p>Another example: a plugin that keeps lines matching a word out of view and counts them, keeping the count in the plugin's own store across restarts.</p>
 <pre><span class="c">-- hush.lua: hide lines with a word in them; /hushed says how many</span>
 isekur.setting("word", "", "c")
@@ -448,7 +448,7 @@ end)</pre>
 <h3>The isekur API</h3>
 <table class="api"><tr><th>Call</th><th>What it does</th></tr>
 <tr><td><code>isekur.command(name, usage, fn)</code></td><td>adds <code>/name</code>. <code>fn(args, srv, target)</code> gets the rest of the line, the tab's network (nil in the main window) and the tab's name. A returned string is shown as an error. iSekur's own commands can't be replaced</td></tr>
-<tr><td><code>isekur.setting(key, default, scope)</code></td><td>declares an option. <code>scope</code> is <code>"g"</code> (global only), <code>"n"</code> (up to the network) or <code>"c"</code> (up to the channel, the default). <code>opt</code> returns the default's type: a boolean (on/true/yes/1), a number or a string</td></tr>
+<tr><td><code>isekur.setting(key, default, scope, help)</code></td><td>declares an option. <code>help</code> is a short line the plugin windows show next to it: what it is and its unit, such as "minutes without typing; 0: never". <code>scope</code> is <code>"g"</code> (global only), <code>"n"</code> (up to the network) or <code>"c"</code> (up to the channel, the default). <code>opt</code> returns the default's type: a boolean (on/true/yes/1), a number or a string</td></tr>
 <tr><td><code>isekur.opt(key, srv, target)</code></td><td>an option's value in that network or channel. <code>enabled</code> is always there: whether the plugin is on there</td></tr>
 <tr><td><code>isekur.say(srv, target, text)</code></td><td>says each line of text in a channel or to a nick</td></tr>
 <tr><td><code>isekur.send(srv, line)</code></td><td>sends one raw IRC line</td></tr>
