@@ -149,7 +149,7 @@ ul.ticks li::before{content:"›";position:absolute;left:6px;top:4px;font:700 20
 
 /* compare */
 .cmp{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg2)}
-.cmp table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:620px}
+.cmp table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:720px}
 .cmp th,.cmp td{padding:10px 14px;text-align:center;border-bottom:1px solid var(--line);color:var(--muted)}
 .cmp tr:last-child td{border-bottom:0}
 .cmp th{font:600 13px var(--mono);color:var(--fg)}
@@ -358,21 +358,22 @@ footer a{color:var(--muted);text-decoration:underline}
 <section id="compare">
   <div class="kicker">Compared</div>
   <h2>Where it fits.</h2>
-  <p class="lead">irssi, WeeChat, HexChat and mIRC are fine clients. iSekur puts the bouncer, the webchat and the encryption in one binary, so there's nothing to bolt on.</p>
+  <p class="lead">irssi, WeeChat, HexChat, mIRC and The Lounge are fine clients. iSekur puts the bouncer, the webchat and the encryption in one binary, so there's nothing to bolt on.</p>
   <div class="cmp"><table>
-    <thead><tr><th></th><th class="me">iSekur</th><th>WeeChat</th><th>irssi</th><th>HexChat</th><th>mIRC</th></tr></thead>
+    <thead><tr><th></th><th class="me">iSekur</th><th>WeeChat</th><th>irssi</th><th>HexChat</th><th>mIRC</th><th>The Lounge</th></tr></thead>
     <tbody>
-      <tr><td>Runs in a terminal</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td>—</td><td>—</td></tr>
-      <tr><td>Detach &amp; attach, built in</td><td class="me y">✓</td><td>tmux</td><td>tmux</td><td>—</td><td>—</td></tr>
-      <tr><td>Webchat of the live session</td><td class="me y">✓</td><td>add-on</td><td>—</td><td>—</td><td>—</td></tr>
-      <tr><td>End-to-end encryption</td><td class="me y">✓</td><td>script</td><td>plugin</td><td>plugin</td><td>DLL</td></tr>
-      <tr><td>IRCv3, drafts included</td><td class="me y">✓</td><td>some</td><td>some</td><td>—</td><td>some</td></tr>
-      <tr><td>A shell tab</td><td class="me y">✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-      <tr><td>Live theme picker</td><td class="me y">✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-      <tr><td>Open source, maintained</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td>archived</td><td>shareware</td></tr>
+      <tr><td>Runs in a terminal</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>Detach &amp; attach, built in</td><td class="me y">✓</td><td>tmux</td><td>tmux</td><td>—</td><td>—</td><td class="y">✓</td></tr>
+      <tr><td>Attach from another machine</td><td class="me y">✓</td><td>relay</td><td>ssh + tmux</td><td>—</td><td>—</td><td>browser</td></tr>
+      <tr><td>Webchat of the live session</td><td class="me y">✓</td><td>add-on</td><td>—</td><td>—</td><td>—</td><td class="y">✓</td></tr>
+      <tr><td>End-to-end encryption</td><td class="me y">✓</td><td>script</td><td>plugin</td><td>plugin</td><td>DLL</td><td>—</td></tr>
+      <tr><td>IRCv3, drafts included</td><td class="me y">✓</td><td>some</td><td>some</td><td>—</td><td>some</td><td>some</td></tr>
+      <tr><td>A shell tab</td><td class="me y">✓</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>Live theme picker</td><td class="me y">✓</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="y">✓</td></tr>
+      <tr><td>Open source, maintained</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td>archived</td><td>shareware</td><td class="y">✓</td></tr>
     </tbody>
   </table></div>
-  <p class="cmp-note">tmux: through screen or tmux. add-on: the relay plus a separate web app. script / plugin / DLL: FiSH or OTR, installed separately. IRCv3: iSekur also speaks the drafts, chathistory, multiline, read markers, redaction, replies, reactions and typing.</p>
+  <p class="cmp-note">tmux: through screen or tmux. relay / add-on: WeeChat's relay plus a separate app. iSekur attaches over ssh, or as a tab with <code>/attach host</code>. script / plugin / DLL: FiSH or OTR, installed separately. IRCv3: iSekur also speaks the drafts, chathistory, multiline, read markers, redaction, replies, reactions and typing. IRCCloud is left out: it's a hosted service, not a client you install.</p>
 </section>
 
 <section id="install">
