@@ -365,7 +365,9 @@ timestamp      = %H:%M
 /plugin available
 /plugin install autoaway
 /plugin                                   <span class="c"># or /plugins: what's installed, on or off, its commands</span>
-/plugin update                            <span class="c"># every installed plugin, to the catalog's version</span>
+/plugin update                            <span class="c"># every installed plugin with a newer version in the catalog</span>
+/plugin update autoaway                   <span class="c"># that one, also putting back a file you edited</span>
+/plugin refresh                           <span class="c"># fetch the catalog now (it's kept for 12 hours)</span>
 /plugin remove autoaway                   <span class="c"># the file, its settings and its saved data</span></pre>
 <p>An installed plugin is on everywhere. You can also limit it to one network or one channel, with <code>name@network</code> and <code>name@network/#channel</code>:</p>
 <pre>/plugin disable autoaway                  <span class="c"># off everywhere...</span>
@@ -391,7 +393,8 @@ announce_back = on</pre>
 
 <h3>Writing a plugin</h3>
 <p>A plugin is a single file, <code>~/.config/isekur/plugins/&lt;name&gt;.lua</code>. The name can use letters, digits, <code>_</code> and <code>-</code>. The file runs once when the plugin loads, and that first run is where it declares its settings, its commands and the events it handles. Here is a complete one:</p>
-<pre><span class="c">-- ~/.config/isekur/plugins/hello.lua</span>
+<pre><span class="c">-- version: 1.0</span>
+<span class="c">-- ~/.config/isekur/plugins/hello.lua</span>
 isekur.setting("greeting", "Hello", "c")     <span class="c">-- an option: default "Hello", settable per channel</span>
 
 <span class="c">-- /hello [nick]</span>
@@ -407,7 +410,7 @@ isekur.on("message", function(e)
     isekur.exec(e.srv, e.target, "/me waves at " .. e.nick)
   end
 end)</pre>
-<p>To try it, run <code>/plugin enable hello</code>, then type <code>/hello bob</code> in a channel. After you edit the file, run <code>/plugin reload hello</code>. <code>print(...)</code> writes <code>[hello] ...</code> to the main window, which is handy while you're debugging.</p>
+<p>The <code>-- version:</code> line is how iSekur tells a newer version in the catalog (an update) from a file you changed yourself (same version, different contents, shown as edited). To try it, run <code>/plugin enable hello</code>, then type <code>/hello bob</code> in a channel. After you edit the file, run <code>/plugin reload hello</code>. <code>print(...)</code> writes <code>[hello] ...</code> to the main window, which is handy while you're debugging.</p>
 <p>Another example: a plugin that keeps lines matching a word out of view and counts them, keeping the count in the plugin's own store across restarts.</p>
 <pre><span class="c">-- hush.lua: hide lines with a word in them; /hushed says how many</span>
 isekur.setting("word", "", "c")
@@ -458,10 +461,11 @@ end)</pre>
 
 <h3>Sharing one in the catalog</h3>
 <p>The catalog is the <a href="https://github.com/gcanosa/iSekur/tree/main/plugins">plugins folder</a> in iSekur's repository: <code>plugins/&lt;name&gt;/&lt;name&gt;.lua</code>, with an entry for it in <code>plugins/index.json</code>:</p>
+<p>iSekur keeps the index it fetched in <code>.catalog.json</code> in each user's plugins folder and fetches it again only after 12 hours (or with <code>/plugin refresh</code>), so GitHub isn't asked every time someone opens the plugin window. A new version can take up to that long to show up.</p>
 <pre>{"name": "hello", "version": "1.0", "api": 1,
  "description": "Says hello",
  "sha256": "<span class="c">output of: shasum -a 256 plugins/hello/hello.lua</span>"}</pre>
-<p>Open a pull request with both files. <code>api</code> is the <code>isekur.api</code> version the plugin needs; older iSekurs hide plugins that need a newer one. To test a catalog before it's published, start iSekur with <code>ISEKUR_PLUGIN_URL=file:///path/to/plugins/</code>.</p>
+<p><code>version</code> must match the file's own <code>-- version:</code> line. Raise both, and the sha256, with every change, or nobody is offered the update. Open a pull request with both files. <code>api</code> is the <code>isekur.api</code> version the plugin needs; older iSekurs hide plugins that need a newer one. To test a catalog before it's published, start iSekur with <code>ISEKUR_PLUGIN_URL=file:///path/to/plugins/</code>.</p>
 
 <h2 id="twitch">Twitch</h2>
 <p>Twitch chat is IRC. <code>/twitch</code> opens its tab and asks for your login and an OAuth token if they're missing. Then <code>/join streamer</code> joins the chat of <code>twitch.tv/streamer</code>. Display names, name colors, mod/VIP badges (<code>@</code>/<code>+</code>), subs, raids, timeouts and room modes all show.</p>
