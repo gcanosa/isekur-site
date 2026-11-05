@@ -361,7 +361,7 @@ timestamp      = %H:%M
 <p>iSekur runs plugins written in <a href="https://www.lua.org/manual/5.4/">Lua 5.4</a>. The Lua interpreter is built into iSekur, so there's nothing else to install. Plugins are optional: none is installed until you ask for one. Features that only some people want, like auto-away, live in plugins instead of in iSekur itself.</p>
 <h3>Installing and turning them on</h3>
 <p>The easiest way is the plugin window: <code>/plugin</code> alone in the terminal, or the puzzle button at the bottom of the webchat's tab list. It has two tabs, <b>Installed</b> and <b>Available</b> (the catalog). From there you can turn a plugin on or off, install, update or remove one, and open <b>Configure</b> to set its options for everywhere, one network or one channel. In the terminal, Tab switches tabs, Space turns the selected plugin on or off, <kbd>c</kbd> configures it (←→ picks the scope, Enter edits a value), <kbd>i</kbd> installs and <kbd>d</kbd> removes. The same things work as commands:</p>
-<pre><span class="c"># the catalog: the plugins in iSekur's repository, checked by sha256 before they're installed</span>
+<pre><span class="c"># the catalog: github.com/gcanosa/isekur-plugins, checked by sha256 before they're installed</span>
 /plugin available
 /plugin install autoaway
 /plugin                                   <span class="c"># or /plugins: what's installed, on or off, its commands</span>
@@ -468,15 +468,15 @@ end)</pre>
 
 <h3>The sandbox</h3>
 <p>Each plugin runs in its own Lua state with only <code>string</code>, <code>table</code>, <code>math</code>, <code>utf8</code> and the base library, minus <code>load</code>, <code>loadfile</code> and <code>dofile</code>. There is no <code>io</code>, <code>os</code>, <code>require</code> or <code>debug</code>, so a plugin can't read your files, run programs or open sockets of its own. A plugin gets 32 MB of memory. A call that runs too long (about 10 million Lua instructions, such as an endless loop) is stopped with an error. Errors show as <code>[name] error: ...</code>, and after 5 in a row the plugin is unloaded until <code>/plugin reload</code>.</p>
-<div class="tip">A plugin sees what you type (the <code>command</code> event) and every message, so only install plugins you trust. The catalog's plugins are reviewed in iSekur's repository, and their sha256 is checked before they're installed.</div>
+<div class="tip">A plugin sees what you type (the <code>command</code> event) and every message, so only install plugins you trust. The catalog's plugins are reviewed in the <a href="https://github.com/gcanosa/isekur-plugins">isekur-plugins</a> repository, and their sha256 is checked before they're installed.</div>
 
 <h3>Sharing one in the catalog</h3>
-<p>The catalog is the <a href="https://github.com/gcanosa/iSekur/tree/main/plugins">plugins folder</a> in iSekur's repository: <code>plugins/&lt;name&gt;/&lt;name&gt;.lua</code>, with an entry for it in <code>plugins/index.json</code>:</p>
+<p>The catalog is its own repository, <a href="https://github.com/gcanosa/isekur-plugins">isekur-plugins</a>, so nothing of it comes with iSekur: each plugin is <code>&lt;name&gt;/&lt;name&gt;.lua</code> there, with an entry for it in <code>index.json</code>:</p>
 <p>iSekur keeps the index it fetched in <code>.catalog.json</code> in each user's plugins folder and fetches it again only after 12 hours (or with <code>/plugin refresh</code>), so GitHub isn't asked every time someone opens the plugin window. A new version can take up to that long to show up.</p>
 <pre>{"name": "hello", "version": "1.0", "api": 1,
  "description": "Says hello",
- "sha256": "<span class="c">output of: shasum -a 256 plugins/hello/hello.lua</span>"}</pre>
-<p><code>version</code> must match the file's own <code>-- version:</code> line. Raise both, and the sha256, with every change, or nobody is offered the update. Open a pull request with both files. <code>api</code> is the <code>isekur.api</code> version the plugin needs; older iSekurs hide plugins that need a newer one. To test a catalog before it's published, start iSekur with <code>ISEKUR_PLUGIN_URL=file:///path/to/plugins/</code>.</p>
+ "sha256": "<span class="c">output of: shasum -a 256 hello/hello.lua</span>"}</pre>
+<p><code>version</code> must match the file's own <code>-- version:</code> line. Raise both, and the sha256, with every change, or nobody is offered the update. Its <code>check.py</code> (CI runs it on every push and pull request) checks both, and compiles every plugin. Open a pull request there with both files. <code>api</code> is the <code>isekur.api</code> version the plugin needs; older iSekurs hide plugins that need a newer one. To test a catalog before it's published, start iSekur with <code>ISEKUR_PLUGIN_URL=file:///path/to/isekur-plugins/</code>.</p>
 
 <h2 id="twitch">Twitch</h2>
 <p>Twitch chat is IRC. <code>/twitch</code> opens its tab and asks for your login and an OAuth token if they're missing. Then <code>/join streamer</code> joins the chat of <code>twitch.tv/streamer</code>. Display names, name colors, mod/VIP badges (<code>@</code>/<code>+</code>), subs, raids, timeouts and room modes all show.</p>
