@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>iSekur documentation — manual, guide and command reference</title>
-<meta name="description" content="The iSekur manual: install, first steps tutorial, keys, detach and attach, the webchat, security and E2E, themes, Twitch, DCC, and a full reference of every command and setting.">
+<meta name="description" content="The iSekur manual: install, first steps tutorial, keys, detach and attach, the webchat, security and E2E, themes, Lua plugins and scripting, Twitch, DCC, and a full reference of every command and setting.">
 <link rel="canonical" href="https://gcanosa.github.io/isekur-site/docs.html">
 <meta name="theme-color" content="#0b0a14">
 <meta property="og:type" content="article">
@@ -110,6 +110,7 @@ figure.shot figcaption code{font-size:.9em}
 .cmd .ex li{color:var(--green)}
 .cmd .ex li::before{content:"› ";color:var(--muted)}
 .set td:first-child code{color:var(--violet)}
+.api td:first-child{width:38%}.api td:first-child code{color:var(--violet)}.api td:nth-child(2){font-size:14.5px;color:#c3bfdc}
 .set td:nth-child(2){font:13px var(--mono);color:var(--amber);white-space:nowrap}
 .set td:nth-child(3){font-size:14.5px;color:#c3bfdc}
 .empty{color:var(--muted);font-style:italic}
@@ -160,6 +161,7 @@ figure.shot figcaption code{font-size:.9em}
   <a href="#webchat">The webchat</a>
   <a href="#security">Security</a>
   <a href="#themes">Themes</a>
+  <a href="#plugins">Plugins and scripting</a>
   <a href="#twitch">Twitch</a>
   <a href="#dcc">Files (DCC)</a>
   <a href="#ops">Channel ops and opers</a>
@@ -274,7 +276,7 @@ isekur --list       <span class="c"># the ones running, and the command that att
 <h3>Another machine</h3>
 <p><code>/attach host</code> runs <code>ssh -t host isekur --attach</code> and shows that iSekur live in a tab. <code>host</code> can be a name, <code>user@host</code> or a <code>Host</code> from <code>~/.ssh/config</code>. Keys go to the remote iSekur except <kbd>Alt+←/→</kbd> and <kbd>Alt+1–9</kbd>, so <kbd>Alt+D</kbd> in that tab detaches it and leaves it running. <code>/attach host config</code> picks one of several there.</p>
 <div class="tip warn">On Linux servers where systemd kills your processes at logout (<code>KillUserProcesses=yes</code>), run <code>loginctl enable-linger $USER</code> once, or iSekur stops when you log out. Detaching isn't available on Cygwin.</div>
-<p>While nothing is attached, iSekur marks you away (<code>auto_away</code>). On joining a channel, it catches up on what you missed through IRCv3 chathistory when the server supports it.</p>
+<p>While nothing is attached, the <a href="#plugins">autoaway plugin</a> marks you away (<code>/plugin install autoaway</code>). On joining a channel, it catches up on what you missed through IRCv3 chathistory when the server supports it.</p>
 
 <h2 id="webchat">The webchat</h2>
 <p>The webchat is your live session in a browser: the same tabs, menus, input line, suggestions, status bar and theme. It's not a separate client, so everything you do there happens in the running iSekur, the way a bouncer works.</p>
@@ -354,6 +356,108 @@ nick_width     = 12          <span class="c"># mirc: 0, with nick_brackets = &lt
 separator      = │
 timestamp      = %H:%M
 <span class="c"># mirc also sets: font = Fixedsys, ... (the webchat's font) and window = win95 (its dialogs: mac | win95)</span></pre>
+
+<h2 id="plugins">Plugins and scripting</h2>
+<p>iSekur runs plugins written in <a href="https://www.lua.org/manual/5.4/">Lua 5.4</a>. The Lua interpreter is built into iSekur, so there's nothing else to install. Plugins are optional: none is installed until you ask for one. Features that only some people want, like auto-away, live in plugins instead of in iSekur itself.</p>
+<h3>Installing and turning them on</h3>
+<pre><span class="c"># the catalog: the plugins in iSekur's repository, checked by sha256 before they're installed</span>
+/plugin available
+/plugin install autoaway
+/plugin                                   <span class="c"># or /plugins: what's installed, on or off, its commands</span>
+/plugin update                            <span class="c"># every installed plugin, to the catalog's version</span>
+/plugin remove autoaway                   <span class="c"># the file, its settings and its saved data</span></pre>
+<p>An installed plugin is on everywhere. You can also limit it to one network or one channel, with <code>name@network</code> and <code>name@network/#channel</code>:</p>
+<pre>/plugin disable autoaway                  <span class="c"># off everywhere...</span>
+/plugin enable autoaway@sekurnet          <span class="c"># ...but on in sekurnet</span>
+/plugin enable seen@sekurnet/#isekur      <span class="c"># only in that channel</span>
+/plugin set autoaway message Gone fishing
+/plugin set autoaway@sekurnet idle 15     <span class="c"># 15 minutes idle, on sekurnet only</span>
+/plugin set autoaway message              <span class="c"># empty: back to the default</span></pre>
+<p>Each change is written to the config right away, one section per scope. You can also edit these sections by hand and run <code>/reload</code>:</p>
+<pre>[plugin.autoaway]                 <span class="c"># everywhere</span>
+enabled = on
+message = Gone fishing
+[plugin.autoaway@sekurnet]        <span class="c"># one network (its [server.sekurnet] name)</span>
+idle    = 15
+[plugin.autoaway@sekurnet/#isekur]   <span class="c"># one channel, lowercase</span>
+announce = on</pre>
+<p>A value is looked up in the channel's section first, then the network's, then the global one, and finally the plugin's own default.</p>
+<h3>Auto-away is a plugin now</h3>
+<p>Up to 0.5, auto-away was built in, with the <code>auto_away</code>, <code>auto_away_idle</code>, <code>away_message</code> and <code>away_announce</code> settings. It is now the <b>autoaway</b> plugin. <code>/plugin install autoaway</code> moves those settings from <code>[general]</code> and each <code>[server.name]</code> into <code>[plugin.autoaway]</code> and <code>[plugin.autoaway@name]</code>, then deletes the old keys from the config. Until you install it, nobody sets you away, and iSekur reminds you of this at startup. Its options are <code>idle</code> (minutes without typing; 0, the default, means only when nothing is attached), <code>message</code> and <code>announce</code> (a <code>/me</code> in your channels, which you can turn on per channel).</p>
+
+<h3>Writing a plugin</h3>
+<p>A plugin is a single file, <code>~/.config/isekur/plugins/&lt;name&gt;.lua</code>. The name can use letters, digits, <code>_</code> and <code>-</code>. The file runs once when the plugin loads, and that first run is where it declares its settings, its commands and the events it handles. Here is a complete one:</p>
+<pre><span class="c">-- ~/.config/isekur/plugins/hello.lua</span>
+isekur.setting("greeting", "Hello", "c")     <span class="c">-- an option: default "Hello", settable per channel</span>
+
+<span class="c">-- /hello [nick]</span>
+isekur.command("hello", "[nick]", function(args, srv, target)
+  if not srv then return "Use /hello in a channel" end   <span class="c">-- a returned string shows as an error</span>
+  local who = args ~= "" and args or "everyone"
+  isekur.say(srv, target, isekur.opt("greeting", srv, target) .. ", " .. who .. "!")
+end)
+
+<span class="c">-- wave back at whoever says "hi isekur"</span>
+isekur.on("message", function(e)
+  if not e.self and e.text:lower():find("hi isekur", 1, true) then
+    isekur.exec(e.srv, e.target, "/me waves at " .. e.nick)
+  end
+end)</pre>
+<p>To try it, run <code>/plugin enable hello</code>, then type <code>/hello bob</code> in a channel. After you edit the file, run <code>/plugin reload hello</code>. <code>print(...)</code> writes <code>[hello] ...</code> to the main window, which is handy while you're debugging.</p>
+<p>Another example: a plugin that keeps lines matching a word out of view and counts them, keeping the count in the plugin's own store across restarts.</p>
+<pre><span class="c">-- hush.lua: hide lines with a word in them; /hushed says how many</span>
+isekur.setting("word", "", "c")
+isekur.on("message", function(e)
+  local w = isekur.opt("word", e.srv, e.target)
+  if w ~= "" and e.text:lower():find(w:lower(), 1, true) then
+    isekur.store_set("hidden", (tonumber(isekur.store_get("hidden")) or 0) + 1)
+    return true                                   <span class="c">-- true: the line isn't shown</span>
+  end
+end)
+isekur.command("hushed", "", function()
+  print((isekur.store_get("hidden") or 0) .. " lines hidden so far")
+end)</pre>
+
+<h3>Events</h3>
+<p>Register a handler with <code>isekur.on(event, function(e) ... end)</code>. The handler gets a single table. <code>e.srv</code> is the network's name and <code>e.target</code> is the channel or query, when the event has them. Handlers only fire in the networks and channels where the plugin is on.</p>
+<table class="set"><tr><th>Event</th><th>Fields</th><th>When</th></tr>
+<tr><td><code>message</code></td><td><code>nick text self hilight notice action</code></td><td>a message or notice arrives. Return <code>true</code> to hide it. Your own lines only arrive when the server has echo-message</td></tr>
+<tr><td><code>join</code></td><td><code>nick host self</code></td><td>someone (or you) joins <code>e.target</code></td></tr>
+<tr><td><code>part</code></td><td><code>nick reason self kick by</code></td><td>someone leaves <code>e.target</code> or is kicked from it (<code>kick</code> true, <code>by</code> is the kicker)</td></tr>
+<tr><td><code>quit</code></td><td><code>nick host reason</code></td><td>someone quits the network (no target)</td></tr>
+<tr><td><code>away</code></td><td><code>away</code></td><td>the server says you're away (306) or back (305)</td></tr>
+<tr><td><code>command</code></td><td><code>name args</code></td><td>you type a <code>/command</code> (not one a plugin runs). Return <code>true</code> to take it over</td></tr>
+<tr><td><code>tick</code></td><td>(none)</td><td>every second. There's no network, so check <code>isekur.opt("enabled", srv)</code> for the ones you act on</td></tr>
+<tr><td><code>attach</code>, <code>detach</code></td><td>(none)</td><td>a terminal or a browser comes back, or nothing is attached any more</td></tr>
+</table>
+
+<h3>The isekur API</h3>
+<table class="api"><tr><th>Call</th><th>What it does</th></tr>
+<tr><td><code>isekur.command(name, usage, fn)</code></td><td>adds <code>/name</code>. <code>fn(args, srv, target)</code> gets the rest of the line, the tab's network (nil in the main window) and the tab's name. A returned string is shown as an error. iSekur's own commands can't be replaced</td></tr>
+<tr><td><code>isekur.setting(key, default, scope)</code></td><td>declares an option. <code>scope</code> is <code>"g"</code> (global only), <code>"n"</code> (up to the network) or <code>"c"</code> (up to the channel, the default). <code>opt</code> returns the default's type: a boolean (on/true/yes/1), a number or a string</td></tr>
+<tr><td><code>isekur.opt(key, srv, target)</code></td><td>an option's value in that network or channel. <code>enabled</code> is always there: whether the plugin is on there</td></tr>
+<tr><td><code>isekur.say(srv, target, text)</code></td><td>says each line of text in a channel or to a nick</td></tr>
+<tr><td><code>isekur.send(srv, line)</code></td><td>sends one raw IRC line</td></tr>
+<tr><td><code>isekur.print(srv, target, text)</code></td><td>shows text in that tab only (if there's no such tab, the network's tab, else the main window)</td></tr>
+<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>)</td></tr>
+<tr><td><code>isekur.store_get(key)</code>, <code>isekur.store_set(key, value)</code></td><td>the plugin's own saved strings, kept in <code>&lt;name&gt;.data</code> next to it. <code>nil</code> removes a key</td></tr>
+<tr><td><code>isekur.servers()</code>, <code>isekur.channels(srv)</code></td><td>the connected networks; the channels you're in on one</td></tr>
+<tr><td><code>isekur.me(srv)</code>, <code>isekur.rank(srv, chan, nick)</code></td><td>your nick there (nil when not connected); a nick's prefix in a channel (<code>"@"</code>, <code>"+"</code>, <code>""</code>, or nil if it isn't there)</td></tr>
+<tr><td><code>isekur.away(srv)</code>, <code>isekur.attached()</code></td><td>whether you're away there; whether a terminal or a browser is attached</td></tr>
+<tr><td><code>isekur.idle()</code>, <code>isekur.detached_for()</code>, <code>isekur.time()</code></td><td>seconds since you last typed; seconds since anything was attached (0 while attached); Unix time</td></tr>
+<tr><td><code>isekur.name</code>, <code>isekur.api</code></td><td>the plugin's name; the API version (1)</td></tr>
+</table>
+
+<h3>The sandbox</h3>
+<p>Each plugin runs in its own Lua state with only <code>string</code>, <code>table</code>, <code>math</code>, <code>utf8</code> and the base library, minus <code>load</code>, <code>loadfile</code> and <code>dofile</code>. There is no <code>io</code>, <code>os</code>, <code>require</code> or <code>debug</code>, so a plugin can't read your files, run programs or open sockets of its own. A plugin gets 32 MB of memory. A call that runs too long (about 10 million Lua instructions, such as an endless loop) is stopped with an error. Errors show as <code>[name] error: ...</code>, and after 5 in a row the plugin is unloaded until <code>/plugin reload</code>.</p>
+<div class="tip">A plugin sees what you type (the <code>command</code> event) and every message, so only install plugins you trust. The catalog's plugins are reviewed in iSekur's repository, and their sha256 is checked before they're installed.</div>
+
+<h3>Sharing one in the catalog</h3>
+<p>The catalog is the <a href="https://github.com/gcanosa/iSekur/tree/main/plugins">plugins folder</a> in iSekur's repository: <code>plugins/&lt;name&gt;/&lt;name&gt;.lua</code>, with an entry for it in <code>plugins/index.json</code>:</p>
+<pre>{"name": "hello", "version": "1.0", "api": 1,
+ "description": "Says hello",
+ "sha256": "<span class="c">output of: shasum -a 256 plugins/hello/hello.lua</span>"}</pre>
+<p>Open a pull request with both files. <code>api</code> is the <code>isekur.api</code> version the plugin needs; older iSekurs hide plugins that need a newer one. To test a catalog before it's published, start iSekur with <code>ISEKUR_PLUGIN_URL=file:///path/to/plugins/</code>.</p>
 
 <h2 id="twitch">Twitch</h2>
 <p>Twitch chat is IRC. <code>/twitch</code> opens its tab and asks for your login and an OAuth token if they're missing. Then <code>/join streamer</code> joins the chat of <code>twitch.tv/streamer</code>. Display names, name colors, mod/VIP badges (<code>@</code>/<code>+</code>), subs, raids, timeouts and room modes all show.</p>
