@@ -360,6 +360,7 @@ timestamp      = %H:%M
 <h2 id="plugins">Plugins and scripting</h2>
 <p>iSekur runs plugins written in <a href="https://www.lua.org/manual/5.4/">Lua 5.4</a>. The Lua interpreter is built into iSekur, so there's nothing else to install. Plugins are optional: none is installed until you ask for one. Features that only some people want, like auto-away, live in plugins instead of in iSekur itself.</p>
 <h3>Installing and turning them on</h3>
+<p>The easiest way is the plugin window: <code>/plugin</code> alone in the terminal, or the puzzle button at the bottom of the webchat's tab list. It has two tabs, <b>Installed</b> and <b>Available</b> (the catalog). From there you can turn a plugin on or off, install, update or remove one, and open <b>Configure</b> to set its options for everywhere, one network or one channel. In the terminal, Tab switches tabs, Space turns the selected plugin on or off, <kbd>c</kbd> configures it (←→ picks the scope, Enter edits a value), <kbd>i</kbd> installs and <kbd>d</kbd> removes. The same things work as commands:</p>
 <pre><span class="c"># the catalog: the plugins in iSekur's repository, checked by sha256 before they're installed</span>
 /plugin available
 /plugin install autoaway
@@ -380,10 +381,13 @@ message = Gone fishing
 [plugin.autoaway@sekurnet]        <span class="c"># one network (its [server.sekurnet] name)</span>
 idle    = 15
 [plugin.autoaway@sekurnet/#isekur]   <span class="c"># one channel, lowercase</span>
-announce = on</pre>
+announce_back = on</pre>
 <p>A value is looked up in the channel's section first, then the network's, then the global one, and finally the plugin's own default.</p>
 <h3>Auto-away is a plugin now</h3>
-<p>Up to 0.5, auto-away was built in, with the <code>auto_away</code>, <code>auto_away_idle</code>, <code>away_message</code> and <code>away_announce</code> settings. It is now the <b>autoaway</b> plugin. <code>/plugin install autoaway</code> moves those settings from <code>[general]</code> and each <code>[server.name]</code> into <code>[plugin.autoaway]</code> and <code>[plugin.autoaway@name]</code>, then deletes the old keys from the config. Until you install it, nobody sets you away, and iSekur reminds you of this at startup. Its options are <code>idle</code> (minutes without typing; 0, the default, means only when nothing is attached), <code>message</code> and <code>announce</code> (a <code>/me</code> in your channels, which you can turn on per channel).</p>
+<p>Up to 0.5, auto-away was built in, with the <code>auto_away</code>, <code>auto_away_idle</code>, <code>away_message</code> and <code>away_announce</code> settings. It is now the <b>autoaway</b> plugin. <code>/plugin install autoaway</code> moves those settings from <code>[general]</code> and each <code>[server.name]</code> into <code>[plugin.autoaway]</code> and <code>[plugin.autoaway@name]</code>, then deletes the old keys from the config. Until you install it, nobody sets you away, and iSekur reminds you of this at startup. Its options are <code>idle</code> (minutes without typing; 0, the default, means only when nothing is attached), <code>message</code>, <code>announce_away</code> (<code>/me is away: &lt;message&gt;</code> in your channels) and <code>announce_back</code> (<code>/me is back</code>). Both announcements are off by default, and each can be turned on or off on its own, everywhere, per network or per channel. The old <code>away_announce</code> did both, so installing turns both on where it was on. Like any plugin, autoaway itself can be on in some networks and off in others:</p>
+<pre>/plugin disable autoaway@work                         <span class="c"># never away by itself on the "work" network</span>
+/plugin set autoaway announce_back on                <span class="c"># "/me is back" everywhere...</span>
+/plugin set autoaway@sekurnet/#isekur announce_back off   <span class="c"># ...but not in #isekur</span></pre>
 
 <h3>Writing a plugin</h3>
 <p>A plugin is a single file, <code>~/.config/isekur/plugins/&lt;name&gt;.lua</code>. The name can use letters, digits, <code>_</code> and <code>-</code>. The file runs once when the plugin loads, and that first run is where it declares its settings, its commands and the events it handles. Here is a complete one:</p>
