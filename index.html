@@ -221,6 +221,7 @@ footer a{color:var(--muted);text-decoration:underline}
     <a href="#features">Features</a>
     <a href="#themes">Themes</a>
     <a href="#webchat">Webchat</a>
+    <a href="#bnc">BNC</a>
     <a href="#security">Security</a>
     <a href="#install">Install</a>
     <a href="docs.html">Docs</a>
@@ -336,6 +337,24 @@ footer a{color:var(--muted);text-decoration:underline}
   <div class="duo" style="margin-top:28px">
     <figure><div class="browser"><div class="tbar"><i></i><i></i><i></i><span>mIRC theme</span></div><img src="img/web-mirc.png" alt="The webchat in the mIRC theme" loading="lazy"></div><figcaption>The <b>mIRC</b> theme in the browser…</figcaption></figure>
     <figure><div class="browser"><div class="tbar"><i></i><i></i><i></i><span>⚙ Settings</span></div><img src="img/web-set.png" alt="The webchat settings dialog styled as Windows 95" loading="lazy"></div><figcaption>…down to Windows 95 dialogs. <b>⚙</b> edits every setting in place.</figcaption></figure>
+  </div>
+</section>
+
+<section id="bnc">
+  <div class="split">
+    <div class="txt">
+      <div class="kicker">Built-in BNC</div>
+      <h2>Your session,<br>in any IRC client.</h2>
+      <p class="lead">iSekur is a bouncer too. irssi, weechat, hexchat, mIRC, a phone app or another iSekur connect to it and share the live session: the same channels, the recent lines, then everything as it happens. Chat history, replies, reactions and typing come along for IRCv3 clients.</p>
+      <p><a href="docs.html#bnc">Set it up in two minutes →</a></p>
+    </div>
+    <pre class="sh">  /set bnc.user me
+  /bnc password       <span class="c"># the one your clients log in with</span>
+  /bnc start          <span class="c"># ircs:// on port 6698</span>
+<span class="p">$ </span>isekur --bnc        <span class="c"># or: headless, the bouncer only</span>
+
+  <span class="c"># then, in irssi:</span>
+  /connect -tls home.example 6698 me/sekurnet:secret</pre>
   </div>
 </section>
 

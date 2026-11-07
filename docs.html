@@ -159,6 +159,7 @@ figure.shot figcaption code{font-size:.9em}
   <a href="#mouse">Mouse</a>
   <a href="#detach">Detach and attach</a>
   <a href="#webchat">The webchat</a>
+  <a href="#bnc">BNC (bouncer)</a>
   <a href="#security">Security</a>
   <a href="#themes">Themes</a>
   <a href="#plugins">Plugins and scripting</a>
@@ -180,6 +181,7 @@ figure.shot figcaption code{font-size:.9em}
     <a href="#install">Install<span>Homebrew, packages or source</span></a>
     <a href="#guide">First steps<span>The 12-page tutorial, about 5 minutes</span></a>
     <a href="#webchat">Webchat<span>Your session in a browser or on a phone</span></a>
+    <a href="#bnc">BNC<span>irssi, weechat, mIRC or another iSekur on your session</span></a>
     <a href="#commands">Commands<span>Every /command, searchable</span></a>
   </div>
 
@@ -313,6 +315,49 @@ password_hash = pbkdf2$sha256$...</pre>
 </ul>
 
 <figure class="shot"><div class="browser"><div class="bar"><i></i><i></i><i></i><span>https://webchat.sekurnet.org</span></div><a href="img/web-set.png" target="_blank" rel="noopener"><img src="img/web-set.png" alt="The webchat settings dialog in the mIRC theme" loading="lazy"></a></div><figcaption>⚙ edits every setting in place. With the mIRC theme, the dialogs look like Windows 95</figcaption></figure>
+<h2 id="bnc">BNC (bouncer)</h2>
+<p>iSekur can be the bouncer for your other IRC clients: irssi, weechat, hexchat, mIRC, a phone app, or another iSekur. They connect to it instead of to the network and share its session: the same networks and channels, the recent lines, then everything live. What they send goes out through iSekur, so your terminal, the webchat and the other clients see it too. One user for now.</p>
+<h3>Host it</h3>
+<p>On the iSekur that stays connected (a server, a home machine), pick a login and a password, choose where it listens, and start it:</p>
+<pre>/set bnc.user me
+/bnc password            <span class="c"># asks in a box, saves the hash</span>
+/set bnc.bind 0.0.0.0    <span class="c"># for other machines; the default 127.0.0.1 is this one only</span>
+/set bnc.port 6698
+/set bnc.tls on          <span class="c"># off: plain IRC, keep that to 127.0.0.1 or an SSH tunnel</span>
+/save
+/bnc start               <span class="c"># or /set bnc.autostart on, or isekur --bnc from the shell</span></pre>
+<p>The same settings are under <b>BNC</b> in the <code>/set</code> window, and in <code>[bnc]</code> in the config:</p>
+<pre>[bnc]
+autostart     = on
+bind          = 0.0.0.0
+port          = 6698
+tls           = on
+user          = me
+password_hash = pbkdf2$sha256$...   <span class="c"># /bnc password, or isekur --hash-password</span>
+cert          =                     <span class="c"># empty: a self-signed bnc.crt next to the config</span>
+key           =
+backlog       = 50                  <span class="c"># lines of each tab a client gets on connect</span></pre>
+<p><code>isekur --bnc</code> runs it in the background as the bouncer only, with no terminal and no webchat (<code>--web</code> adds it; <code>--attach</code> still works). <code>/bnc</code> shows where it listens and who's connected, and the console tab logs every client that comes, goes or gets the password wrong.</p>
+<div class="tip">With TLS and no <code>cert</code>/<code>key</code>, clients have to skip the certificate check. Point <code>cert</code>/<code>key</code> at a real certificate (Let's Encrypt, <code>tailscale cert</code>) and they can verify it.</div>
+<h3>Connect a client</h3>
+<p>Each connection is one network, picked by the server password <code>user/network:password</code>: <code>me/sekurnet:secret</code> for <code>[server.sekurnet]</code>. With only one network, <code>me:secret</code> is enough.</p>
+<table>
+<tr><th>Client</th><th>How</th></tr>
+<tr><td>irssi</td><td><code>/connect -tls home.example 6698 me/sekurnet:secret</code></td></tr>
+<tr><td>weechat</td><td><code>/server add home home.example/6698 -tls -tls_verify=off -password=me/sekurnet:secret</code>, then <code>/connect home</code></td></tr>
+<tr><td>hexchat</td><td>Network List, Add: server <code>home.example/6698</code>, <i>Use SSL</i>, <i>Accept invalid SSL certificates</i>, Login method <i>Server password</i>, Password <code>me/sekurnet:secret</code></td></tr>
+<tr><td>mIRC</td><td><code>/server -m home.example +6698 me/sekurnet:secret</code> (<code>+</code> is TLS; accept the certificate when it asks)</td></tr>
+</table>
+<p>The client gets the channels iSekur is in with their topics and nicks, the last <code>backlog</code> lines of each tab, then everything live. <code>/quit</code> there only disconnects that client; iSekur stays on the network. When the network drops, the client's channels close with a note and open again on the rejoin.</p>
+<h3>Another iSekur as the client</h3>
+<p>A laptop's iSekur can use the one at home as its server, without ssh:</p>
+<pre>/server home.example 6698 -tls -noverify -name home
+/set server.home.password me/sekurnet:secret
+/save
+/connect home</pre>
+<p>It gets the IRCv3 the BNC offers: <code>draft/chathistory</code> served from the home iSekur's tabs (history on join and when scrolling up, even on networks without it), <code>message-tags</code> (replies, reactions, typing), <code>echo-message</code>, <code>labeled-response</code>, <code>server-time</code>, <code>batch</code>, <code>away-notify</code>, <code>account-notify</code>, <code>account-tag</code>, <code>chghost</code>, <code>setname</code>, <code>extended-join</code>, <code>multi-prefix</code>, <code>userhost-in-names</code> and <code>invite-notify</code>. Other IRCv3 clients ask for what they know the same way.</p>
+<div class="tip">The BNC and <code>/attach host</code> aren't the same thing. <code>/attach</code> shows the remote iSekur itself in a tab, over ssh, with everything. The BNC lets any IRC client in with its own look, but only what IRC carries: no <code>/set</code>, plugins or log browser.</div>
+
 <h2 id="security">Security</h2>
 <h3>Passwords in the config</h3>
 <p><code>sasl_pass</code>, <code>password</code> and <code>nickserv_pass</code> are saved encrypted (<code>enc:…</code>), with the key in <code>secret.key</code> next to the config. Type one in plain text and iSekur encrypts it on the next start or <code>/reload</code>. The config file is created private (mode 0600). Passwords never show in <code>/set</code> or the settings window.</p>
@@ -502,7 +547,8 @@ end)</pre>
 <tr><td><code>-a</code>, <code>--attach</code></td><td>Bring a detached iSekur back to this terminal. With none running for that config, a new one starts.</td></tr>
 <tr><td><code>-l</code>, <code>--list</code></td><td>List the running iSekurs, each with the command that attaches it</td></tr>
 <tr><td><code>--web</code>, <code>--no-web</code></td><td>Start the webchat, or don't, whatever <code>[web] autostart</code> says</td></tr>
-<tr><td><code>--hash-password</code></td><td>Read a password and print a <code>[web] password_hash</code> line</td></tr>
+<tr><td><code>--bnc</code></td><td>Run in the background as a <a href="#bnc">bouncer</a> only: no terminal, no webchat (<code>--web</code> adds it). Needs <code>[bnc] user</code> and <code>password_hash</code></td></tr>
+<tr><td><code>--hash-password</code></td><td>Read a password and print a <code>password_hash</code> line (<code>[web]</code> or <code>[bnc]</code>)</td></tr>
 <tr><td><code>-v</code>, <code>--version</code></td><td>Print the version</td></tr>
 </table>
 <p><code>man isekur</code> has all of this offline.</p>
