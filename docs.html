@@ -191,9 +191,10 @@ figure.shot figcaption code{font-size:.9em}
 isekur              <span class="c"># start it</span>
 brew upgrade isekur <span class="c"># later: update to the latest release</span></pre>
 <h3>Prebuilt packages</h3>
-<p>The links always point at the newest release: <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz">macOS (Apple silicon)</a>, <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz">Linux x86_64</a>, <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-arm64.tar.gz">Linux arm64</a> (both Linux packages need libssl3).</p>
+<p>The links always point at the newest release: <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz">macOS (Apple silicon)</a>, <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz">Linux x86_64</a>, <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-arm64.tar.gz">Linux arm64</a> (both Linux packages need libssl3) and <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-windows-x86_64.zip">Windows x86_64</a>.</p>
 <pre>curl -L https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz | tar xz
 sudo isekur-linux-x86_64/install.sh     <span class="c"># installs to /usr/local</span></pre>
+<p>On Windows, unzip the package anywhere and run <code>isekur.cmd</code> in Windows Terminal. It is a Cygwin build with the DLLs it needs inside, so there is nothing to install and Cygwin isn't needed. It is newer and less tried than the others, and Cygwin has no PAM and can't pass a terminal over a unix socket, so it has no <code>/shell</code> and no detach and attach. Your settings go to <code>%USERPROFILE%\.config\isekur</code>, so replacing the folder with a newer one keeps them. For all of iSekur on Windows, use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
 <h3>From source</h3>
 <p>Needs a C++17 compiler, GNU make, OpenSSL 1.1+ or LibreSSL, and PAM (<code>libpam0g-dev</code> on Debian and Ubuntu). termbox2 and libvterm are included. It builds on macOS, Linux, FreeBSD and Cygwin.</p>
 <pre>git clone https://github.com/gcanosa/iSekur && cd iSekur
