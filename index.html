@@ -168,13 +168,20 @@ pre.sh .p{color:var(--pink);user-select:none}
 .tabs button[aria-selected=true]{color:#16001a;background:var(--violet);border-color:var(--violet)}
 .panel[hidden]{display:none}
 .dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:14px}
-.dl a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#ffffff06;color:var(--fg)}
-.dl a:hover{border-color:var(--cyan);text-decoration:none}
-.dl a{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
+.dl>a,.dl>div{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#ffffff06;color:var(--fg)}
+.dl>a:hover,.dl>div:hover{border-color:var(--cyan);text-decoration:none}
+.dl>a,.dl>div{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
 .dl .os{grid-row:span 2;width:26px;height:26px;fill:var(--muted);color:var(--muted);transition:fill .15s,color .15s}
-.dl a:hover .os{fill:var(--cyan);color:var(--cyan)}
+.dl>a:hover .os,.dl>div:hover .os{fill:var(--cyan);color:var(--cyan)}
 .dl small{display:flex;align-items:center;gap:5px;color:var(--muted);font:12px var(--mono)}
 .dl .arch{width:12px;height:12px;flex:none}
+.dl .archs{flex-wrap:wrap;gap:4px 8px}
+.dl .need{margin-left:10px;color:var(--muted);font:12px var(--mono)}
+/* an architecture is a tag of its own colour wherever it appears: x86_64 cyan, arm64 pink */
+.dl .pill{display:inline-flex;align-items:center;gap:5px;padding:1px 9px 1px 7px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 40%,transparent);background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--c)}
+.dl .x64{--c:var(--cyan)}
+.dl .a64{--c:var(--pink)}
+.dl a.pill:hover,.dl a.pill:focus-visible{background:color-mix(in srgb,var(--c) 28%,transparent);border-color:var(--c);text-decoration:none}
 .dlnote{color:var(--muted);font-size:14px;max-width:720px;margin:14px 0 0}
 
 /* keys */
@@ -421,10 +428,9 @@ footer a{color:var(--muted);text-decoration:underline}
       <symbol id="arch-chip" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></g></symbol>
     </svg>
     <div class="dl">
-      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz"><svg class="os"><use href="#os-apple"/></svg>macOS<small><svg class="arch"><use href="#arch-chip"/></svg>arm64 · Apple silicon</small></a>
-      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz"><svg class="os"><use href="#os-linux"/></svg>Linux<small><svg class="arch"><use href="#arch-chip"/></svg>x86_64 · libssl3</small></a>
-      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-arm64.tar.gz"><svg class="os"><use href="#os-linux"/></svg>Linux<small><svg class="arch"><use href="#arch-chip"/></svg>arm64 · libssl3</small></a>
-      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-windows-x86_64.zip"><svg class="os"><use href="#os-windows"/></svg>Windows<small><svg class="arch"><use href="#arch-chip"/></svg>x86_64 · Cygwin build</small></a>
+      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz"><svg class="os"><use href="#os-apple"/></svg>macOS<small><span class="pill a64"><svg class="arch"><use href="#arch-chip"/></svg>arm64</span>Apple silicon</small></a>
+      <div><svg class="os"><use href="#os-linux"/></svg><span>Linux<span class="need">libssl3</span></span><small class="archs"><a class="pill x64" title="Intel and AMD, 64-bit" href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz"><svg class="arch"><use href="#arch-chip"/></svg>x86_64</a><a class="pill a64" title="ARM, 64-bit: Raspberry Pi, Ampere, Graviton" href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-arm64.tar.gz"><svg class="arch"><use href="#arch-chip"/></svg>arm64</a></small></div>
+      <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-windows-x86_64.zip"><svg class="os"><use href="#os-windows"/></svg>Windows<small><span class="pill x64"><svg class="arch"><use href="#arch-chip"/></svg>x86_64</span>Cygwin build</small></a>
       <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-src.tar.gz"><svg class="os"><use href="#os-src"/></svg>Source<small>tar.gz</small></a>
     </div>
     <p class="dlnote">Windows: unzip it anywhere and run <code>isekur.cmd</code> in Windows Terminal. Nothing to install, but it is the newest and least tried build, and Cygwin can't do <code>/shell</code> or detach and attach. For all of iSekur on Windows, use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
