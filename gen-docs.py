@@ -121,15 +121,24 @@ guide = [dict(title=g[0], html=[mirc_html(l) for l in g[1]]) for g in table('GUI
 
 # ---- settings from the config template ------------------------------------------
 settings, sec, note, skip = [], None, [], False
-for line in open(os.path.join(root, "iSekur.conf.example"), encoding="utf-8"):
-    line = line.rstrip('\n')
+conf_lines = [l.rstrip('\n') for l in open(os.path.join(root, "iSekur.conf.example"), encoding="utf-8")]
+# comment lines right above a [section] header are that section's intro, not an optional key of the one before
+intro_lines, i = set(), 0
+while i < len(conf_lines):
+    if re.match(r'^\s*[#;]', conf_lines[i]):
+        j = i
+        while j < len(conf_lines) and re.match(r'^\s*[#;]', conf_lines[j]): j += 1
+        if j < len(conf_lines) and re.match(r'^\s*\[', conf_lines[j]): intro_lines.update(range(i, j))
+        i = j
+    else: i += 1
+for n, line in enumerate(conf_lines):
     t = re.sub(r'^\s*[#;]\s?', '', line) if re.match(r'^\s*[#;]', line) else None
     if re.match(r'^\s*\[', line):
         name = line.strip()[1:-1]
         sec = dict(section=name, intro=' '.join(note), keys=[]); settings.append(sec); note = []; skip = False
     elif t is not None and t.startswith('['):
         skip = True; note = []  # a commented-out example section (twitch)
-    elif t is not None and re.match(r'^\w+\s*=', t):
+    elif t is not None and re.match(r'^\w+\s*=', t) and n not in intro_lines:
         if sec is not None and not skip:  # an optional key, shown commented out
             k, _, v = t.partition('=')
             val, _, com = v.partition(' ;')
