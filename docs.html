@@ -161,6 +161,7 @@ figure.shot figcaption code{font-size:.9em}
   <a href="#webchat">The webchat</a>
   <a href="#bnc">BNC (bouncer)</a>
   <a href="#security">Security</a>
+  <a href="#fifo">FIFO (scripts and shells)</a>
   <a href="#themes">Themes</a>
   <a href="#plugins">Plugins and scripting</a>
   <a href="#twitch">Twitch</a>
@@ -376,6 +377,18 @@ backlog       = 50                  <span class="c"># lines of each tab a client
 <figure class="shot"><a href="img/doc-shell-login.png" target="_blank" rel="noopener"><img src="img/doc-shell-login.png" alt="The /shell login dialog" loading="lazy"></a><figcaption><code>/shell</code> asks for this machine's login, checked through PAM</figcaption></figure>
 <h3>Shell commands: /exec</h3>
 <p><code>/exec ls -la</code> (alias <code>/sh</code>) streams the output into the cmd tab. <code>/exec -o uptime</code> says it in the current channel. Commands are killed after <code>exec_timeout</code> seconds, and the webchat can't run them unless <code>exec_web = on</code>.</p>
+
+<h2 id="fifo">FIFO: scripts and shells</h2>
+<p>With <code>/set fifo on</code>, iSekur creates a named pipe and reads it. Every line written to it runs as if you had typed it, so a script, a cron job or a shell can send messages, run commands and join channels.</p>
+<pre>/set fifo on                                         <span class="c"># creates the pipe</span>
+printf '%s\n' '/msg bob hi' &gt; ~/.config/isekur/fifo    <span class="c"># bob gets "hi"</span></pre>
+<p>Each running iSekur has its own pipe. <code>isekur.conf</code> uses <code>~/.config/isekur/fifo</code>, and <code>-c work.conf</code> uses <code>work.fifo</code> beside it. Write to the path of the instance you want. <code>fifo_path</code> moves it.</p>
+<h3>Where a line goes</h3>
+<p>Without a target, a line runs in the active tab. A target before a <code>|</code> sends it elsewhere: <code>sekurnet/#chan|hello</code> (a channel on a network), <code>sekurnet|/msg bob hi</code> (that network's status tab), <code>#chan|hello</code> (on the active network) or <code>3|hello</code> (tab 3, as in <code>/win 3</code>). A target with no open tab is refused, with a message in the status tab. A prefix that isn't a target is plain text: <code>lol|ok</code> sends <code>lol|ok</code>.</p>
+<h3>Escapes and formatting</h3>
+<p>Each line is decoded: <code>\n</code> ends a line, <code>\xHH</code> is any byte (<code>\x03</code> color), <code>\e</code> the escape, <code>\\</code> a backslash. Formatting: <code>\b</code> bold, <code>\i</code> italics, <code>\u</code> underline, <code>\s</code> strikethrough, <code>\m</code> monospace, <code>\v</code> reverse, <code>\o</code> reset.</p>
+<pre>printf '%s\n' 'sekurnet/#chan|\u\bBuild\o passed' &gt; ~/.config/isekur/fifo</pre>
+<div class="tip warn">POSIX only (Linux, macOS, BSDs, Cygwin): native Windows has no named pipes. The pipe is owner-only, ignored while iSekur is locked, and removed at exit.</div>
 
 <h2 id="themes">Themes</h2>
 <p>iSekur comes with 37 24-bit color themes, with a 256-color fallback for terminals that need it (<code>colors = 256</code>). <code>/theme</code> alone opens a picker that previews each one live; <code>/theme name</code> switches directly. Themes are saved without <code>/save</code>.</p>
