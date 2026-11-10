@@ -510,6 +510,7 @@ end)</pre>
 <tr><td><code>nick</code></td><td><code>nick new self</code></td><td>someone changes nick: <code>nick</code> is the old one (no target)</td></tr>
 <tr><td><code>away</code></td><td><code>away</code></td><td>the server says you're away (306) or back (305)</td></tr>
 <tr><td><code>command</code></td><td><code>name args</code></td><td>you type a <code>/command</code> (not one a plugin runs). Return <code>true</code> to take it over</td></tr>
+<tr><td><code>show</code></td><td><code>nick</code>, <code>text</code>, <code>self</code>, <code>action</code>, <code>notice</code></td><td>a message about to be shown in a tab. Return a string to show that instead, on the screens only: the network got the original and the log keeps it</td></tr>
 <tr><td><code>tick</code></td><td>(none)</td><td>every second. There's no network, so check <code>isekur.opt("enabled", srv)</code> for the ones you act on</td></tr>
 <tr><td><code>attach</code>, <code>detach</code></td><td>(none)</td><td>a terminal or a browser comes back, or nothing is attached any more</td></tr>
 </table>
@@ -536,6 +537,7 @@ end)</pre>
 <tr><td><code>isekur.platform()</code>, <code>isekur.which(name)</code></td><td>the system's name in lowercase (<code>"darwin"</code>, <code>"linux"</code>...); a program's full path on PATH, or nil</td></tr>
 <tr><td><code>isekur.run(argv, text)</code></td><td>starts a speech engine (<code>say</code>, <code>spd-say</code>, <code>espeak-ng</code>, <code>espeak</code>, <code>flite</code>, or <code>festival --tts</code>; nothing else, never through a shell) with <code>text</code> on its stdin. <code>false</code> while the last one still runs</td></tr>
 <tr><td><code>isekur.speak_web(text, lang)</code></td><td>the webchat says <code>text</code> aloud in the browser, in language <code>lang</code></td></tr>
+<tr><td><code>isekur.theme()</code></td><td>the loaded theme's colors as <code>0xRRGGBB</code>: <code>name</code>, <code>fg</code>, <code>bg</code> (nil: the terminal's own), <code>hilight</code>, <code>timestamp</code> and the list <code>nicks</code></td></tr>
 <tr><td><code>isekur.name</code>, <code>isekur.api</code></td><td>the plugin's name; the API version</td></tr>
 </table>
 
