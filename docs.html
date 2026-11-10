@@ -511,6 +511,7 @@ end)</pre>
 <tr><td><code>away</code></td><td><code>away</code></td><td>the server says you're away (306) or back (305)</td></tr>
 <tr><td><code>command</code></td><td><code>name args</code></td><td>you type a <code>/command</code> (not one a plugin runs). Return <code>true</code> to take it over</td></tr>
 <tr><td><code>show</code></td><td><code>nick</code>, <code>text</code>, <code>self</code>, <code>action</code>, <code>notice</code></td><td>a message about to be shown in a tab. Return a string to show that instead, on the screens only: the network got the original and the log keeps it</td></tr>
+<tr><td><code>nickmenu</code></td><td><code>nick</code></td><td>you right-clicked a nick in the nicklist, or a query tab. Return <code>{{"Label", "/command ..."}, ...}</code> (up to 8) to add them to its menu, after a separator: /commands only, one line each</td></tr>
 <tr><td><code>tick</code></td><td>(none)</td><td>every second. There's no network, so check <code>isekur.opt("enabled", srv)</code> for the ones you act on</td></tr>
 <tr><td><code>attach</code>, <code>detach</code></td><td>(none)</td><td>a terminal or a browser comes back, or nothing is attached any more</td></tr>
 </table>
