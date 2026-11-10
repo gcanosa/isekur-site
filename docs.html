@@ -522,7 +522,7 @@ end)</pre>
 <tr><td><code>isekur.say(srv, target, text)</code></td><td>says each line of text in a channel or to a nick</td></tr>
 <tr><td><code>isekur.send(srv, line)</code></td><td>sends one raw IRC line</td></tr>
 <tr><td><code>isekur.print(srv, target, text, note)</code></td><td>shows text in that tab only (if there's no such tab, the network's tab, else the main window). <code>note</code> true puts the INFO badge first</td></tr>
-<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>, <code>/exec</code>, <code>/sh</code> and <code>/shell</code>)</td></tr>
+<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>, <code>/exec</code>, <code>/sh</code>, <code>/shell</code> and <code>/attach</code>)</td></tr>
 <tr><td><code>isekur.store_get(key)</code>, <code>isekur.store_set(key, value)</code></td><td>the plugin's own saved strings, kept in <code>&lt;name&gt;.data</code> next to it. <code>nil</code> removes a key. They're written to disk within 5 seconds, and when the plugin is unloaded or iSekur exits</td></tr>
 <tr><td><code>isekur.store_keys()</code></td><td>every key in the store</td></tr>
 <tr><td><code>isekur.active()</code></td><td>the tab you're on: its network (nil for the main window) and its name</td></tr>
