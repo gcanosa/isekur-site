@@ -351,6 +351,7 @@ backlog       = 50                  <span class="c"># lines of each tab a client
 <tr><td>mIRC</td><td><code>/server -m home.example +6698 me/sekurnet:secret</code> (<code>+</code> is TLS; accept the certificate when it asks)</td></tr>
 </table>
 <p>The client gets the channels iSekur is in with their topics and nicks, the last <code>backlog</code> lines of each tab, then everything live. <code>/quit</code> there only disconnects that client; iSekur stays on the network. When the network drops, the client's channels close with a note and open again on the rejoin.</p>
+<p>A client can log in with a certificate instead of the password (SASL EXTERNAL, over TLS). Put the certificate's SHA-256 in <code>/set bnc.certfp</code>, comma-separated for several; get it with <code>openssl x509 -noout -fingerprint -sha256 -in client.pem</code>. Clients without a matching certificate still use the password.</p>
 <h3>Another iSekur as the client</h3>
 <p>A laptop's iSekur can use the one at home as its server, without ssh:</p>
 <pre>/server home.example 6698 -tls -noverify -name home
@@ -376,7 +377,7 @@ backlog       = 50                  <span class="c"># lines of each tab a client
 <p><code>/shell</code> opens your <code>$SHELL</code> as a login shell in a tab, after checking this machine's login and password through PAM (<code>pam_service</code>, default <code>login</code>). vim, top, ssh and Ctrl+C all work. Three wrong logins lock it for a minute. It's never reachable from the webchat or from IRC, only from the terminal iSekur runs in.</p>
 <figure class="shot"><a href="img/doc-shell-login.png" target="_blank" rel="noopener"><img width="1752" height="1088" src="img/doc-shell-login.png" alt="The /shell login dialog" loading="lazy"></a><figcaption><code>/shell</code> asks for this machine's login, checked through PAM</figcaption></figure>
 <h3>Shell commands: /exec</h3>
-<p><code>/exec ls -la</code> (alias <code>/sh</code>) streams the output into the cmd tab. <code>/exec -o uptime</code> says it in the current channel. Commands are killed after <code>exec_timeout</code> seconds, and the webchat can't run them unless <code>exec_web = on</code>.</p>
+<p><code>/exec ls -la</code> (alias <code>/sh</code>) streams the output into the cmd tab. It runs in bash or zsh: your login shell when it is one of them. <code>/exec -o uptime</code> says it in the current channel. Commands are killed after <code>exec_timeout</code> seconds, and the webchat can't run them unless <code>exec_web = on</code>.</p>
 
 <h2 id="fifo">FIFO: scripts and shells</h2>
 <p>With <code>/set fifo on</code>, iSekur creates a named pipe and reads it. Every line written to it runs as if you had typed it, so a script, a cron job or a shell can send messages, run commands and join channels.</p>
@@ -455,7 +456,10 @@ announce_back = on</pre>
   <li><b>autoaway</b>: away when you're idle or nothing is attached, back when you return (below).</li>
   <li><b>awaylog</b>: your highlights and private messages while you were away or detached, summed up when you come back, in the tab you're on: "While you were away (2h13m): 3 mentions in #isekur, 2 PMs from bob", then the lines. <code>/awaylog</code> shows the last summary again, and <code>/awaylog clear</code> forgets it. Options: <code>show</code> (lines in the summary, 10), <code>keep</code> (200), <code>detached</code> (also while nothing is attached, on).</li>
   <li><b>seen</b>: <code>/seen nick</code> tells when and where someone was last seen talking, joining, leaving, quitting or changing nick. With <code>/plugin set seen@sekurnet/#isekur reply on</code> it also answers <code>!seen nick</code> in that channel, once every 10 seconds at most. To other people it only tells what happened in that same channel, and only when for anything else. It remembers the 5000 most recent nicks (<code>max</code>).</li>
+  <li><b>autosort</b>: keeps the tabs grouped by network, each network's status tab first, then by name.</li>
+  <li><b>tts</b>: reads messages aloud with this machine's speech engine, the webchat's browser voice, or both.</li>
 </ul>
+<p><code>/plugin available</code> lists the whole catalog.</p>
 <h3>Auto-away is a plugin now</h3>
 <p>Up to 0.5, auto-away was built in, with the <code>auto_away</code>, <code>auto_away_idle</code>, <code>away_message</code> and <code>away_announce</code> settings. It is now the <b>autoaway</b> plugin. <code>/plugin install autoaway</code> moves those settings from <code>[general]</code> and each <code>[server.name]</code> into <code>[plugin.autoaway]</code> and <code>[plugin.autoaway@name]</code>, then deletes the old keys from the config. Until you install it, nobody sets you away, and iSekur reminds you of this at startup. Its options are <code>idle</code> (in minutes without typing; 0, the default, means only when nothing is attached, after 30 seconds), <code>message</code>, <code>announce_away</code> (<code>/me is away: &lt;message&gt;</code> in your channels) and <code>announce_back</code> (<code>/me is back</code>). Both announcements are off by default, and each can be turned on or off on its own, everywhere, per network or per channel. The old <code>away_announce</code> did both, so installing turns both on where it was on. Like any plugin, autoaway itself can be on in some networks and off in others:</p>
 <pre>/plugin disable autoaway@work                         <span class="c"># never away by itself on the "work" network</span>
@@ -518,7 +522,7 @@ end)</pre>
 <tr><td><code>isekur.say(srv, target, text)</code></td><td>says each line of text in a channel or to a nick</td></tr>
 <tr><td><code>isekur.send(srv, line)</code></td><td>sends one raw IRC line</td></tr>
 <tr><td><code>isekur.print(srv, target, text, note)</code></td><td>shows text in that tab only (if there's no such tab, the network's tab, else the main window). <code>note</code> true puts the INFO badge first</td></tr>
-<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>)</td></tr>
+<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>, <code>/exec</code>, <code>/sh</code> and <code>/shell</code>)</td></tr>
 <tr><td><code>isekur.store_get(key)</code>, <code>isekur.store_set(key, value)</code></td><td>the plugin's own saved strings, kept in <code>&lt;name&gt;.data</code> next to it. <code>nil</code> removes a key. They're written to disk within 5 seconds, and when the plugin is unloaded or iSekur exits</td></tr>
 <tr><td><code>isekur.store_keys()</code></td><td>every key in the store</td></tr>
 <tr><td><code>isekur.active()</code></td><td>the tab you're on: its network (nil for the main window) and its name</td></tr>
@@ -528,7 +532,11 @@ end)</pre>
 <tr><td><code>isekur.me(srv)</code>, <code>isekur.rank(srv, chan, nick)</code></td><td>your nick there (nil when not connected); a nick's prefix in a channel (<code>"@"</code>, <code>"+"</code>, <code>""</code>, or nil if it isn't there)</td></tr>
 <tr><td><code>isekur.away(srv)</code>, <code>isekur.attached()</code></td><td>whether you're away there; whether a terminal or a browser is attached</td></tr>
 <tr><td><code>isekur.idle()</code>, <code>isekur.detached_for()</code>, <code>isekur.time()</code></td><td>seconds since you last typed; seconds since anything was attached (0 while attached); Unix time</td></tr>
-<tr><td><code>isekur.name</code>, <code>isekur.api</code></td><td>the plugin's name; the API version (1)</td></tr>
+<tr><td><code>isekur.sort_tabs()</code></td><td>each network's tabs together, status tab first, then by name. <code>true</code> if the order changed</td></tr>
+<tr><td><code>isekur.platform()</code>, <code>isekur.which(name)</code></td><td>the system's name in lowercase (<code>"darwin"</code>, <code>"linux"</code>...); a program's full path on PATH, or nil</td></tr>
+<tr><td><code>isekur.run(argv, text)</code></td><td>starts a speech engine (<code>say</code>, <code>spd-say</code>, <code>espeak-ng</code>, <code>espeak</code>, <code>flite</code>, or <code>festival --tts</code>; nothing else, never through a shell) with <code>text</code> on its stdin. <code>false</code> while the last one still runs</td></tr>
+<tr><td><code>isekur.speak_web(text, lang)</code></td><td>the webchat says <code>text</code> aloud in the browser, in language <code>lang</code></td></tr>
+<tr><td><code>isekur.name</code>, <code>isekur.api</code></td><td>the plugin's name; the API version</td></tr>
 </table>
 
 <h3>The sandbox</h3>
@@ -582,6 +590,8 @@ end)</pre>
 <p>systemd is killing your processes at logout: run <code>loginctl enable-linger $USER</code> once.</p>
 <h3>The webchat doesn't load</h3>
 <p>Bound to <code>127.0.0.1</code> without a cert, it speaks plain HTTP, so open <code>http://</code>, not <code>https://</code>. Behind a proxy, point the proxy at <code>http://127.0.0.1:port</code>. Other binds need HTTPS. A self-signed certificate works, but the browser warns and won't install it as an app.</p>
+<h3>A network on a legacy charset</h3>
+<p>A network that isn't on UTF-8 yet: <code>/set server.sekurnet.encoding iso-8859-9</code>, any name <code>iconv</code> knows, then reconnect. Inside iSekur everything stays UTF-8; a character the charset can't write goes out as <code>?</code>. <code>/servers sekurnet</code>, or <b>Edit network...</b> in a server tab's menu, opens the settings at that network.</p>
 <h3>A self-signed IRC server</h3>
 <p><code>/server host 6697 -tls -noverify</code> skips the certificate check. Only use it for a server you trust.</p>
 <h3>Still stuck?</h3>
