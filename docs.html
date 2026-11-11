@@ -456,8 +456,10 @@ announce_back = on</pre>
   <li><b>autoaway</b>: away when you're idle or nothing is attached, back when you return (below).</li>
   <li><b>awaylog</b>: your highlights and private messages while you were away or detached, summed up when you come back, in the tab you're on: "While you were away (2h13m): 3 mentions in #isekur, 2 PMs from bob", then the lines. <code>/awaylog</code> shows the last summary again, and <code>/awaylog clear</code> forgets it. Options: <code>show</code> (lines in the summary, 10), <code>keep</code> (200), <code>detached</code> (also while nothing is attached, on).</li>
   <li><b>seen</b>: <code>/seen nick</code> tells when and where someone was last seen talking, joining, leaving, quitting or changing nick. With <code>/plugin set seen@sekurnet/#isekur reply on</code> it also answers <code>!seen nick</code> in that channel, once every 10 seconds at most. To other people it only tells what happened in that same channel, and only when for anything else. It remembers the 5000 most recent nicks (<code>max</code>).</li>
-  <li><b>autosort</b>: keeps the tabs grouped by network, each network's status tab first, then by name.</li>
+  <li><b>autosort</b>: keeps the tabs grouped by network, each network's status tab first, then by name. A tab you <code>/move</code> (or drag) stays where you put it and the others sort around it, until iSekur restarts.</li>
   <li><b>tts</b>: reads messages aloud with this machine's speech engine, the webchat's browser voice, or both.</li>
+  <li><b>pmguard</b>: private messages from people you haven't let through are held, not opened; <code>/pmguard allow nick</code>, or <b>Allow PMs</b> in the nicklist's right click, opens the query with what they said.</li>
+  <li><b>lolcat</b>: the messages in the channels and queries you pick, in rainbow, fire, ice and other palettes, on your screens only: nothing is sent in color and the logs stay plain.</li>
 </ul>
 <p><code>/plugin available</code> lists the whole catalog.</p>
 <h3>Auto-away is a plugin now</h3>
@@ -510,7 +512,7 @@ end)</pre>
 <tr><td><code>nick</code></td><td><code>nick new self</code></td><td>someone changes nick: <code>nick</code> is the old one (no target)</td></tr>
 <tr><td><code>away</code></td><td><code>away</code></td><td>the server says you're away (306) or back (305)</td></tr>
 <tr><td><code>command</code></td><td><code>name args</code></td><td>you type a <code>/command</code> (not one a plugin runs). Return <code>true</code> to take it over</td></tr>
-<tr><td><code>show</code></td><td><code>nick</code>, <code>text</code>, <code>self</code>, <code>action</code>, <code>notice</code></td><td>a message about to be shown in a tab. Return a string to show that instead, on the screens only: the network got the original and the log keeps it</td></tr>
+<tr><td><code>show</code></td><td><code>nick</code>, <code>text</code>, <code>self</code>, <code>action</code>, <code>notice</code></td><td>a message about to be shown in a tab. Return a string to show that instead, on the screens only: the network got the original and the log keeps it. It runs again over every tab's scrollback when a plugin is enabled, disabled, reloaded or has a setting changed</td></tr>
 <tr><td><code>nickmenu</code></td><td><code>nick</code></td><td>you right-clicked a nick in the nicklist, or a query tab. Return <code>{{"Label", "/command ..."}, ...}</code> (up to 8) to add them to its menu, after a separator: /commands only, one line each</td></tr>
 <tr><td><code>tick</code></td><td>(none)</td><td>every second. There's no network, so check <code>isekur.opt("enabled", srv)</code> for the ones you act on</td></tr>
 <tr><td><code>attach</code>, <code>detach</code></td><td>(none)</td><td>a terminal or a browser comes back, or nothing is attached any more</td></tr>
@@ -534,7 +536,7 @@ end)</pre>
 <tr><td><code>isekur.me(srv)</code>, <code>isekur.rank(srv, chan, nick)</code></td><td>your nick there (nil when not connected); a nick's prefix in a channel (<code>"@"</code>, <code>"+"</code>, <code>""</code>, or nil if it isn't there)</td></tr>
 <tr><td><code>isekur.away(srv)</code>, <code>isekur.attached()</code></td><td>whether you're away there; whether a terminal or a browser is attached</td></tr>
 <tr><td><code>isekur.idle()</code>, <code>isekur.detached_for()</code>, <code>isekur.time()</code></td><td>seconds since you last typed; seconds since anything was attached (0 while attached); Unix time</td></tr>
-<tr><td><code>isekur.sort_tabs()</code></td><td>each network's tabs together, status tab first, then by name. <code>true</code> if the order changed</td></tr>
+<tr><td><code>isekur.sort_tabs()</code></td><td>each network's tabs together, status tab first, then by name. <code>true</code> if the order changed. A tab the user <code>/move</code>d (or dragged) keeps its place until iSekur restarts</td></tr>
 <tr><td><code>isekur.platform()</code>, <code>isekur.which(name)</code></td><td>the system's name in lowercase (<code>"darwin"</code>, <code>"linux"</code>...); a program's full path on PATH, or nil</td></tr>
 <tr><td><code>isekur.run(argv, text)</code></td><td>starts a speech engine (<code>say</code>, <code>spd-say</code>, <code>espeak-ng</code>, <code>espeak</code>, <code>flite</code>, or <code>festival --tts</code>; nothing else, never through a shell) with <code>text</code> on its stdin. <code>false</code> while the last one still runs</td></tr>
 <tr><td><code>isekur.speak_web(text, lang)</code></td><td>the webchat says <code>text</code> aloud in the browser, in language <code>lang</code></td></tr>
