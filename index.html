@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>iSekur — open source terminal IRC client with a webchat</title>
-<meta name="description" content="iSekur is a free, open source terminal IRC client for macOS and Linux: 37 color themes, IRCv3 and SASL, detach and attach like tmux, a built-in webchat that mirrors your session (bouncer style), and end-to-end encrypted chats.">
+<meta name="description" content="iSekur is a free, open source terminal IRC client for macOS and Linux: 45 color themes, IRCv3 and SASL, detach and attach like tmux, a built-in webchat that mirrors your session (bouncer style), and end-to-end encrypted chats.">
 <meta name="keywords" content="IRC client, terminal IRC client, open source IRC, IRCv3, IRC bouncer, webchat, TUI, macOS, Linux, C++">
 <meta name="author" content="Gerardo Canosa">
 <meta name="robots" content="index, follow">
@@ -14,14 +14,14 @@
 <meta property="og:site_name" content="iSekur">
 <meta property="og:url" content="https://gcanosa.github.io/isekur-site/">
 <meta property="og:title" content="iSekur — open source terminal IRC client">
-<meta property="og:description" content="37 themes, IRCv3, detach/attach like tmux, a live webchat, end-to-end encrypted queries and channels. Free for macOS and Linux.">
+<meta property="og:description" content="45 themes, IRCv3, detach/attach like tmux, a live webchat, end-to-end encrypted queries and channels. Free for macOS and Linux.">
 <meta property="og:image" content="https://gcanosa.github.io/isekur-site/img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="iSekur running in a terminal with the Rosé Pine theme">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="iSekur — open source terminal IRC client">
-<meta name="twitter:description" content="37 themes, IRCv3, detach/attach like tmux, a live webchat and end-to-end encryption.">
+<meta name="twitter:description" content="45 themes, IRCv3, detach/attach like tmux, a live webchat and end-to-end encryption.">
 <meta name="twitter:image" content="https://gcanosa.github.io/isekur-site/img/og.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script type="application/ld+json">
@@ -131,7 +131,6 @@ section{padding:96px 0 0}
 h2{font:700 clamp(32px,4.5vw,48px)/1.1 var(--sans);letter-spacing:-1px;margin:10px 0 14px}
 .lead{color:var(--muted);font-size:19px;max-width:720px;margin:0 0 40px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-#webchat .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .card{background:linear-gradient(180deg,#1a1830,#141225);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(400px 120px at 0 0,var(--c,#c792ea)18,transparent)}
 .card .ic{font:700 15px var(--mono);color:var(--c,var(--violet));background:color-mix(in srgb,var(--c,#c792ea) 14%,transparent);border:1px solid color-mix(in srgb,var(--c,#c792ea) 35%,transparent);display:inline-block;padding:4px 10px;border-radius:8px;margin-bottom:14px}
@@ -240,7 +239,7 @@ footer a{color:var(--muted);text-decoration:underline}
 <header class="hero wrap">
   <span class="badge"><i></i><span id="ver">latest release</span> · GPL-3.0 · C++17</span>
   <h1>iSekur<span class="sr"> — open source terminal IRC client</span><span class="cur"></span></h1>
-  <p class="tag">A small, <em>very colorful</em> terminal IRC client, with a built-in webchat that mirrors your live session in a browser, bouncer style.</p>
+  <p class="tag">A small, <em>very colorful</em> terminal IRC client. Your live session opens in a browser too.</p>
   <div class="cta">
     <a class="btn primary" href="#install">Get iSekur →</a>
     <a class="btn" href="docs.html">Read the docs</a>
@@ -252,7 +251,7 @@ footer a{color:var(--muted);text-decoration:underline}
     <div class="term" id="term">
       <div class="tbar"><i></i><i></i><i></i><span>isekur</span></div>
       <div class="scr" id="scr">
-        <div class="row" data-c="topic">iSekur <b>colorful</b> terminal IRC client | <b>37 themes</b> | github.com/gcanosa/iSekur</div>
+        <div class="row" data-c="topic">iSekur <b>colorful</b> terminal IRC client | <b>45 themes</b> | github.com/gcanosa/iSekur</div>
         <div class="row" data-c="tabbar"><span data-c="tab_home" class="b"> 1:cmd </span> <span data-c="tab_server"> 2:SekurNet </span> <span data-c="tab_active"> 3:#isekur </span> <span data-c="tab_data"> 4:#linux </span> <span data-c="tab_msg"> 5:#retro </span> <span data-c="tab_hilight"> 6:#secret 🔒</span></div>
         <div class="body">
           <div class="chat" id="chat"></div>
@@ -280,25 +279,22 @@ footer a{color:var(--muted);text-decoration:underline}
 <section id="features">
   <div class="kicker">Features</div>
   <h2>Everything you want from IRC.<br>Nothing you have to fight.</h2>
-  <p class="lead">One small binary, OpenSSL and a config file it writes for you. A first-steps guide opens on the first start.</p>
+  <p class="lead">One small binary. A first-steps guide opens on the first start.</p>
   <div class="grid">
-    <div class="card" style="--c:#ff5fd7"><span class="ic">37 themes</span><h3>Truly colorful</h3><p>24-bit color themes, dark and light, from neon and dracula to the classic mIRC look, with a 256-color fallback. <code>/theme</code> opens a live picker.</p></div>
-    <div class="card" style="--c:#7dcfff"><span class="ic">Alt+D</span><h3>Detach &amp; attach like tmux</h3><p>Leave it running, come back from any terminal or SSH login with <code>isekur --attach</code>. A dropped connection detaches instead of quitting.</p></div>
-    <div class="card" style="--c:#9ece6a"><span class="ic">IRCv3</span><h3>Modern IRC</h3><p>TLS with verification, CAP 302, SASL PLAIN / SCRAM-SHA-256 / EXTERNAL, server-time, echo-message, chathistory catch-up and more.</p></div>
-    <div class="card" style="--c:#ffcb6b"><span class="ic">webchat</span><h3>Your session in a browser</h3><p>HTTPS + WebSocket mirror of the live client. Installs as an app, with notifications for highlights and private messages.</p></div>
-    <div class="card" style="--c:#c792ea"><span class="ic">🔒 e2e</span><h3>Encrypted queries &amp; channels</h3><p>AES-256-GCM between iSekur users, with a key from scrypt. A lock on every encrypted line and tab.</p></div>
-    <div class="card" style="--c:#ff9e64"><span class="ic">/shell</span><h3>A real terminal in a tab</h3><p>vim, top and ssh run in a tab, behind a PAM login. <code>/attach host</code> brings another machine's iSekur in live.</p></div>
-    <div class="card" style="--c:#e0af68"><span class="ic">fifo</span><h3>Scripts drive iSekur</h3><p>Write a line to the pipe and it runs as if typed, in any tab: <code>printf '%s\n' 'sekurnet/#chan|\bdeploy\b done' &gt; ~/.config/isekur/fifo</code>. Each running iSekur has its own pipe.</p></div>
-    <div class="card" style="--c:#82aaff"><span class="ic">mouse</span><h3>Click everything</h3><p>Tabs, activity numbers, nicks, links (OSC 8), right-click menus, wheel scrolling, drag to copy through OSC 52.</p></div>
-    <div class="card" style="--c:#f7768e"><span class="ic">@ops</span><h3>Channel op tools</h3><p><code>/lockdown</code>, <code>/kickban</code>, <code>/tempban</code>, mass op/voice/kick, <code>/chanstats</code>, <code>/topicrotate</code>, and a <code>*snotices</code> tab for opers.</p></div>
-    <div class="card" style="--c:#38d9a9"><span class="ic">more</span><h3>The small things</h3><p>Flood-safe pastes, <code>/grep</code> through the scrollback, a "new" marker, highlights, DCC with resume, Twitch chat, logs, a CPU/battery status bar.</p></div>
+    <div class="card" style="--c:#ff5fd7"><span class="ic">45 themes</span><h3>Truly colorful</h3><p>Dark and light 24-bit themes, from neon to the classic mIRC look. <code>/theme</code> previews them live.</p></div>
+    <div class="card" style="--c:#7dcfff"><span class="ic">Alt+D</span><h3>Detach &amp; attach</h3><p>Like tmux, built in. Come back from any terminal or SSH login.</p></div>
+    <div class="card" style="--c:#ffcb6b"><span class="ic">webchat</span><h3>Your session in a browser</h3><p>The same live session on your phone, installable as an app.</p></div>
+    <div class="card" style="--c:#c792ea"><span class="ic">🔒 e2e</span><h3>Encrypted chats</h3><p>Queries and channels only the people with the password can read.</p></div>
+    <div class="card" style="--c:#9ece6a"><span class="ic">IRCv3</span><h3>Modern IRC</h3><p>TLS, SASL, chat history, replies, reactions and typing.</p></div>
+    <div class="card" style="--c:#ff9e64"><span class="ic">/shell</span><h3>A terminal in a tab</h3><p>vim, top and ssh in a tab, behind your login.</p></div>
   </div>
+  <p style="margin-top:18px">And op tools, DCC, Twitch, scripts, aliases, mouse support… <a href="docs.html">all in the docs →</a></p>
 </section>
 
 <section id="themes">
   <div class="kicker">The real thing</div>
-  <h2>Same chat, six of the 37 themes.</h2>
-  <p class="lead">Screenshots of iSekur running in a terminal. A theme changes everything: the bars, the tabs, the nicklist, the timestamps, the nick colors, even the layout (mIRC puts <code>&lt;nicks&gt;</code> inline).</p>
+  <h2>Same chat, six of the 45 themes.</h2>
+  <p class="lead">Real screenshots. A theme changes the bars, tabs, nicklist, nick colors, even the layout.</p>
   <div class="gal-tabs" role="tablist"><button role="tab" aria-selected="true" data-g="mirc">mIRC</button><button role="tab" aria-selected="false" data-g="rose-pine">Rosé Pine</button><button role="tab" aria-selected="false" data-g="ayu">Ayu</button><button role="tab" aria-selected="false" data-g="neon">Neon</button><button role="tab" aria-selected="false" data-g="catppuccin-latte">Catppuccin Latte</button><button role="tab" aria-selected="false" data-g="dracula">Dracula</button></div>
   <div class="gal" id="gal"><img class="on" data-g="mirc" src="img/chat-mirc.png" alt="iSekur in the mIRC theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1718" height="960"><img data-g="rose-pine" src="img/chat-rose-pine.png" alt="iSekur in the Rosé Pine theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1718" height="960"><img data-g="ayu" src="img/chat-ayu.png" alt="iSekur in the Ayu theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1718" height="960"><img data-g="neon" src="img/chat-neon.png" alt="iSekur in the Neon theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1718" height="960"><img data-g="catppuccin-latte" src="img/chat-catppuccin-latte.png" alt="iSekur in the Catppuccin Latte theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1718" height="960"><img data-g="dracula" src="img/chat-dracula.png" alt="iSekur in the Dracula theme: topic bar, tabs, chat with a new marker, nicklist and status bar" width="1718" height="960"></div>
 </section>
@@ -306,7 +302,7 @@ footer a{color:var(--muted);text-decoration:underline}
 <section id="tools">
   <div class="kicker">Built in</div>
   <h2>Windows for everything, inside the terminal.</h2>
-  <p class="lead">No config file spelunking: every setting and every theme is a keystroke away.</p>
+  <p class="lead">Every setting and every theme is a keystroke away.</p>
   <div class="duo">
     <figure><img width="1718" height="1096" class="shot" src="img/theme-picker.png" alt="The /theme picker previewing dayfox live over the chat" loading="lazy"><figcaption><b>/theme</b>: ↑↓ previews each theme live, type to filter, Enter keeps it</figcaption></figure>
     <figure><img width="1718" height="1096" class="shot" src="img/settings.png" alt="The /set settings window with categories and values" loading="lazy"><figcaption><b>/set</b>: every key by category, / searches, e edits, Space toggles</figcaption></figure>
@@ -318,7 +314,7 @@ footer a{color:var(--muted);text-decoration:underline}
     <div class="txt">
       <div class="kicker">Always on</div>
       <h2>Close the laptop.<br>Stay in the channel.</h2>
-      <p class="lead">The IRC side lives in a background process and your terminal is only attached to it. Run several side by side, one config each.</p>
+      <p class="lead">iSekur keeps running in the background. Your terminal just attaches to it.</p>
     </div>
     <pre class="sh"><span class="p">$ </span>isekur              <span class="c"># start, or attach if it's running</span>
   <span class="c">Alt+D / /detach     # back to the shell, still connected</span>
@@ -332,16 +328,10 @@ footer a{color:var(--muted);text-decoration:underline}
 <section id="webchat">
   <div class="kicker">Webchat</div>
   <h2>The same session, on your phone.</h2>
-  <p class="lead">Not a separate client: the browser mirrors the live terminal session, the way a bouncer would. <code>/web start</code> and log in.</p>
+  <p class="lead">The browser mirrors the live terminal session. <code>/web start</code> and log in.</p>
   <div class="webwrap">
     <div class="browser"><div class="tbar"><i></i><i></i><i></i><a href="https://webchat.sekurnet.org" style="text-decoration:none"><span>https://webchat.sekurnet.org</span></a></div><img width="2480" height="1040" src="img/web-rose.png" alt="The iSekur webchat in the Rosé Pine theme: tab list, chat, nicklist, status bar and input line" loading="lazy"></div>
     <div class="phone"><img width="780" height="1520" src="img/web-phone.png" alt="The webchat on a phone" loading="lazy"></div>
-  </div>
-  <div class="grid">
-    <div class="card" style="--c:#7dcfff"><span class="ic">mirror</span><h3>Same everything</h3><p>The same tabs, nick and tab menus, input line, suggestions, status bar and theme colors as the terminal.</p></div>
-    <div class="card" style="--c:#c792ea"><span class="ic">PWA</span><h3>Installs as an app</h3><p>Put it on the home screen or the dock, with notifications for highlights and private messages.</p></div>
-    <div class="card" style="--c:#9ece6a"><span class="ic">login</span><h3>Locked down</h3><p>HTTPS + WebSocket, a PBKDF2 password hash and a lockout after failed tries.</p></div>
-    <div class="card" style="--c:#ffcb6b"><span class="ic">⚙</span><h3>Settings in place</h3><p>⚙ edits every setting with switches and a theme list, + adds a server, ⇅ downloads DCC files, seedbox style.</p></div>
   </div>
   <div class="duo" style="margin-top:28px">
     <figure><div class="browser"><div class="tbar"><i></i><i></i><i></i><span>mIRC theme</span></div><img width="2560" height="1520" src="img/web-mirc.png" alt="The webchat in the mIRC theme" loading="lazy"></div><figcaption>The <b>mIRC</b> theme in the browser…</figcaption></figure>
@@ -354,7 +344,7 @@ footer a{color:var(--muted);text-decoration:underline}
     <div class="txt">
       <div class="kicker">Built-in BNC</div>
       <h2>Your session,<br>in any IRC client.</h2>
-      <p class="lead">iSekur is a bouncer too. irssi, weechat, hexchat, mIRC, a phone app or another iSekur connect to it and share the live session: the same channels, the recent lines, then everything as it happens. Chat history, replies, reactions and typing come along for IRCv3 clients.</p>
+      <p class="lead">iSekur is a bouncer too. irssi, WeeChat, HexChat, mIRC or a phone app connect to it and share the live session.</p>
       <p><a href="docs.html#bnc">Set it up in two minutes →</a></p>
     </div>
     <pre class="sh">  /set bnc.user me
@@ -373,20 +363,19 @@ footer a{color:var(--muted);text-decoration:underline}
       <div class="kicker">Security</div>
       <h2>Private by default.</h2>
       <ul class="ticks">
-        <li><code>/e2e nick</code> or <code>/e2e #chan</code>: AES-256-GCM, keys kept in memory</li>
-        <li><code>/lock on</code>: a master password before any tab, log or message</li>
-        <li><code>/shell</code> checks your login through PAM and is never reachable from the web or IRC</li>
-        <li>TLS certificate verification and SASL out of the box</li>
+        <li><code>/e2e</code>: encrypted queries and channels</li>
+        <li><code>/lock</code>: a password before anything shows, Face ID in the webchat</li>
+        <li>TLS verified and SASL out of the box</li>
       </ul>
     </div>
-    <img class="shot" src="https://raw.githubusercontent.com/gcanosa/iSekur/main/docs/e2e.png" alt="An encrypted channel with a lock on the tab and on every line" >
+    <img class="shot" width="1718" height="1028" src="img/doc-e2e.png" alt="An encrypted channel with a lock on the tab and on every line" loading="lazy">
   </div>
 </section>
 
 <section id="compare">
   <div class="kicker">Compared</div>
   <h2>Where it fits.</h2>
-  <p class="lead">irssi, WeeChat, HexChat, mIRC and The Lounge are fine clients. iSekur puts the bouncer, the webchat and the encryption in one binary, so there's nothing to bolt on.</p>
+  <p class="lead">The bouncer, the webchat and the encryption come in one binary.</p>
   <div class="cmp"><table>
     <thead><tr><th></th><th class="me">iSekur</th><th>WeeChat</th><th>irssi</th><th>HexChat</th><th>mIRC</th><th>The Lounge</th></tr></thead>
     <tbody>
@@ -402,7 +391,7 @@ footer a{color:var(--muted);text-decoration:underline}
       <tr><td>Open source, maintained</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td>archived</td><td>shareware</td><td class="y">✓</td></tr>
     </tbody>
   </table></div>
-  <p class="cmp-note">tmux: through screen or tmux. relay / add-on: WeeChat's relay plus a separate app. iSekur attaches over ssh, or as a tab with <code>/attach host</code>. script / plugin / DLL: FiSH or OTR, installed separately. IRCv3: iSekur also speaks the drafts, chathistory, multiline, read markers, redaction, replies, reactions and typing. IRCCloud is left out: it's a hosted service, not a client you install.</p>
+  <p class="cmp-note">tmux, relay, script, plugin: an extra tool or add-on to install.</p>
 </section>
 
 <section id="install">
@@ -434,7 +423,7 @@ footer a{color:var(--muted);text-decoration:underline}
       <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-windows-x86_64.zip"><svg class="os"><use href="#os-windows"/></svg>Windows<small><span class="pill x64"><svg class="arch"><use href="#arch-chip"/></svg>x86_64</span>Cygwin build</small></a>
       <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-src.tar.gz"><svg class="os"><use href="#os-src"/></svg>Source<small>tar.gz</small></a>
     </div>
-    <p class="dlnote">Windows: unzip it anywhere and run <code>isekur.cmd</code> in Windows Terminal. Nothing to install, but it is the newest and least tried build, and Cygwin can't do <code>/shell</code> or detach and attach. For all of iSekur on Windows, use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
+    <p class="dlnote">Windows: unzip and run <code>isekur.cmd</code>. It can't do <code>/shell</code> or detach; for everything use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
   </div>
   <div class="panel" id="p-src" hidden><pre class="sh"><span class="c"># needs a C++17 compiler, GNU make, OpenSSL 1.1+/LibreSSL and PAM</span>
 <span class="p">$ </span>git clone https://github.com/gcanosa/iSekur && cd iSekur

@@ -11,17 +11,17 @@ HASH = "pbkdf2$sha256$200000$rN4UvnbV7WAxmxQq/JgxkA==$vV4biqDvfNxWzUO6h0CYLACPNE
 
 srv = Server(name="irc.sekurnet.org", cfg={"server": {"network": "SekurNet"}}).start()
 open(f"{HERE}/pids", "w").write(str(srv.proc.pid))
-bots = {n: srv.client(n, realname=n) for n in ["morpheus", "tank", "niobe", "switch", "apoc", "dozer", "mouse", "trinity"]}
+bots = {n: srv.client(n, realname=n) for n in ["morpheus", "tank", "niobe", "switch", "apoc", "dozer", "mouse", "trinity", "cypher"]}
 m = bots["morpheus"]
 for ch in ["#isekur", "#linux", "#retro", "#secret"]:
     m.send(f"JOIN {ch}")
 time.sleep(0.3)
 m.send(f"TOPIC #isekur :iSekur {C}13colorful{O} terminal IRC client | {B}v0.5{B} out now | https://github.com/gcanosa/iSekur")
 for n, b in bots.items():
-    if n != "morpheus": b.send("JOIN #isekur")
+    if n not in ("morpheus", "cypher"): b.send("JOIN #isekur")
 bots["tank"].send("JOIN #retro"); bots["trinity"].send("JOIN #secret")
 time.sleep(0.3)
-m.send("MODE #isekur +vv tank niobe")
+m.send("MODE #isekur +vv tank niobe"); m.send("TOPIC #secret :end-to-end encrypted with /e2e"); m.send("PART #secret")
 import socket, threading
 PX = socket.socket(); PX.bind(("127.0.0.1", 0)); PX.listen(5); PXPORT = PX.getsockname()[1]
 def _pipe(a, b, tag):
@@ -51,6 +51,29 @@ def cap(name):
 def say(n, text, ch="#isekur"):
     bots[n].send(f"PRIVMSG {ch} :{text}"); time.sleep(0.15)
 def act(n, text): say(n, f"\x01ACTION {text}\x01")
+
+import base64, hashlib
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+def seal(pw, text, ch="#secret"):  # what /e2e #secret sends (src/e2e.cpp)
+    k = hashlib.scrypt(pw.encode(), salt=b"isekur-chan:" + ch.encode(), n=1 << 15, r=8, p=1, maxmem=128 << 20, dklen=32)
+    nonce = os.urandom(12)
+    return "+iSE " + base64.b64encode(nonce + AESGCM(k).encrypt(nonce, text.encode(), ch.encode())).decode()
+def secret():
+    keys("M-6"); typ("/e2e #secret"); time.sleep(0.5); typ("zion"); time.sleep(1)
+    say("trinity", seal("zion", "the docks at 0600, bring the keys"), "#secret"); pump()
+    typ("copy that. nobody else on the server can read this")
+    bots["cypher"].send("JOIN #secret"); time.sleep(0.2)
+    say("cypher", seal("mouse", "let me in"), "#secret")
+    say("trinity", seal("zion", "cypher keeps trying, wrong password, all he gets is noise"), "#secret")
+    bots["cypher"].send("PART #secret"); time.sleep(0.2)
+    typ("and the key for an autojoin channel is saved, so no password after a restart")
+    say("trinity", seal("zion", "see you there"), "#secret"); time.sleep(0.4); pump()
+def click_nick(nick, button=2):  # SGR mouse report on the nick in the user list
+    rows = tmux("capture-pane", "-t", "s", "-p").splitlines()
+    for y, r in enumerate(rows):
+        x = r.find(nick, 70)
+        if x >= 0: break
+    tmux("send-keys", "-t", "s", "-l", f"\x1b[<{button};{x + 2};{y + 1}M\x1b[<{button};{x + 2};{y + 1}m"); time.sleep(0.4)
 
 def stop():
     typ("/exit -y"); time.sleep(0.8); tmux("kill-server"); time.sleep(0.3)
@@ -116,8 +139,21 @@ elif mode == "ui":
     typ("/set"); time.sleep(0.5)
     keys("Down"); keys("Down"); keys("Down")
     cap("settings"); keys("q"); stop()
+elif mode == "docs":
+    start("tokyonight", 24); chat()
+    keys("M-1"); cap("doc-welcome")
+    keys("M-2"); typ("/list"); time.sleep(1); cap("doc-list"); keys("Escape")
+    keys("M-3"); typ("/whois morpheus"); time.sleep(0.6); cap("doc-whois")
+    tmux("send-keys", "-t", "s", "-l", "/se"); cap("doc-suggest"); keys("C-u"); keys("Escape")
+    keys("C-g"); tmux("send-keys", "-t", "s", "-l", "li"); cap("doc-find"); keys("Escape"); keys("Escape")
+    click_nick("morpheus"); cap("doc-nickmenu"); keys("Escape")
+    typ("/help server"); cap("doc-help-server")
+    secret(); cap("doc-e2e")
+    typ("/shell"); time.sleep(0.5); typ("neo"); tmux("send-keys", "-t", "s", "-l", "secret12"); cap("doc-shell-login"); keys("Escape")
+    keys("M-3"); typ("/lock"); time.sleep(0.4); typ("shot"); time.sleep(0.6); typ("shot"); time.sleep(1); cap("doc-lock"); typ("shot"); time.sleep(0.5)
+    typ("/exit -y"); time.sleep(0.5); typ("shot"); time.sleep(0.8); tmux("kill-server")
 elif mode == "web":
-    start("rose-pine", 22, web=True); chat()
+    start("rose-pine", 22, web=True); secret(); chat()
     print("READY", flush=True)
     while os.path.exists(f"{HERE}/web.hold"): time.sleep(0.5); pump()
     stop()

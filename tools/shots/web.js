@@ -20,5 +20,16 @@ const { chromium } = require(process.env.PWC);
   await p.screenshot({ path: "out/web-mirc.png" });
   await p.click("#setbtn"); await p.waitForTimeout(1500);
   await p.screenshot({ path: "out/web-set.png" });
+  // docs section: login, an E2E channel, the Servers window
+  const d = await b.newContext({ ignoreHTTPSErrors: true, deviceScaleFactor: 2, viewport: { width: 1100, height: 640 } });
+  const r = await d.newPage(); await r.goto(url); await r.waitForTimeout(800);
+  await r.screenshot({ path: "out/doc-web-login.png" });
+  await r.fill("#lu", "me"); await r.fill("#lp", "shot"); await r.press("#lp", "Enter");
+  await r.waitForSelector("#msgs >> text=see you in", { timeout: 15000 });
+  await r.fill("#line", "/theme rose-pine"); await r.press("#line", "Enter"); await r.waitForTimeout(1200);
+  await r.click("#side .tab >> text=#secret"); await r.waitForTimeout(1200);
+  await r.screenshot({ path: "out/doc-web-e2e.png" });
+  await r.click("#addsrv"); await r.waitForTimeout(1200);
+  await r.screenshot({ path: "out/doc-web-servers.png" });
   await b.close();
 })().catch(e => { console.error(e); process.exit(1); });
