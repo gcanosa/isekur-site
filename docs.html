@@ -200,7 +200,7 @@ sudo isekur-linux-x86_64/install.sh     <span class="c"># installs to /usr/local
 <p>Needs a C++17 compiler, GNU make, OpenSSL 1.1+ or LibreSSL, and PAM (<code>libpam0g-dev</code> on Debian and Ubuntu). termbox2 and libvterm are included. It builds on macOS, Linux, FreeBSD and Cygwin.</p>
 <pre>git clone https://github.com/gcanosa/iSekur && cd iSekur
 make                <span class="c"># gmake on *BSD; make notwitch leaves Twitch support out</span>
-make test
+make test           <span class="c"># optional: checks the build on your system</span>
 sudo make install   <span class="c"># /usr/local; PREFIX=... must match the build</span>
 man isekur</pre>
 
