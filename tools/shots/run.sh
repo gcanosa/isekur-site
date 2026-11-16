@@ -16,6 +16,7 @@ python3 scene.py ui
 python3 ans2html.py theme-picker.ans dayfox > t.html && node render.js t.html out/theme-picker.png
 python3 ans2html.py settings.ans catppuccin-mocha > t.html && node render.js t.html out/settings.png
 python3 scene.py docs  # the docs section's terminal shots
+python3 scene.py layout  # doc-layout: the tabs down the left side
 for f in doc-*.ans; do python3 ans2html.py $f tokyonight > t.html && node render.js t.html out/${f%.ans}.png; done
 touch web.hold
 python3 scene.py web > web.out 2>&1 &

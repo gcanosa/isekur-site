@@ -78,7 +78,7 @@ def click_nick(nick, button=2):  # SGR mouse report on the nick in the user list
 def stop():
     typ("/exit -y"); time.sleep(0.8); tmux("kill-server"); time.sleep(0.3)
 
-def start(theme, rows, web=False):
+def start(theme, rows, web=False, extra=""):
     d = "/tmp/iskshot"; os.makedirs(d, exist_ok=True)
     open(f"{d}/isekur.conf", "w").write(f"""[general]
 nick = neo
@@ -92,7 +92,7 @@ log = off
 keep_history = off
 banner_anim = off
 flood_interval_ms = 0
-[server.sekurnet]
+{extra}[server.sekurnet]
 host = 127.0.0.1
 port = {PXPORT}
 tls = false
@@ -152,6 +152,8 @@ elif mode == "docs":
     typ("/shell"); time.sleep(0.5); typ("neo"); tmux("send-keys", "-t", "s", "-l", "secret12"); cap("doc-shell-login"); keys("Escape")
     keys("M-3"); typ("/lock"); time.sleep(0.4); typ("shot"); time.sleep(0.6); typ("shot"); time.sleep(1); cap("doc-lock"); typ("shot"); time.sleep(0.5)
     typ("/exit -y"); time.sleep(0.5); typ("shot"); time.sleep(0.8); tmux("kill-server")
+elif mode == "layout":  # tab_bar = left: the tabs as a tree down the side
+    start("tokyonight", 24, extra="tab_bar = left\n"); chat(); cap("doc-layout"); stop()
 elif mode == "web":
     start("rose-pine", 22, web=True); secret(); chat()
     print("READY", flush=True)

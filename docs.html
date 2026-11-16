@@ -224,13 +224,22 @@ man isekur</pre>
 <p>From top to bottom:</p>
 <ul>
   <li><b>Topic bar</b>: the channel topic. Click it to unfold a long one, scroll it sideways with the wheel, and double click it to edit it (when you're allowed to, e.g. as an op on a +t channel). <kbd>Ctrl+T</kbd> hides it.</li>
-  <li><b>Tab bar</b>: one tab per server, channel, private chat, shell and special tab (<code>*guide</code>, <code>*channels</code> from <code>/list</code>). Tab colors show activity: messages, highlights, joins and parts. Right click a server tab to fold its channels away; it shows "+N" instead.</li>
-  <li><b>Chat</b> with the <b>nicklist</b> on the right in channels (<kbd>F2</kbd> hides it). A "new" line marks the first message you missed. The terminal and the webchat share that marker.</li>
+  <li><b>Tab bar</b>: one tab per server, channel, private chat, shell and special tab (<code>*guide</code>, <code>*channels</code> from <code>/list</code>). Tab colors show activity: messages, highlights, joins and parts. Right click a server tab to fold its channels away; it shows "+N" instead. Drag a tab onto another to move it there.</li>
+  <li><b>Chat</b> with the <b>nicklist</b> on the right in channels (<kbd>F2</kbd> hides it, <code>/set nicklist_side left</code> moves it to the left). A "new" line marks the first message you missed. The terminal and the webchat share that marker.</li>
   <li><b>Status bar</b>: the time, your nick and modes, the tab, lag, <code>[Act: …]</code> with clickable numbers of tabs that have activity, and optionally CPU, memory, load and battery (<code>/statusbar</code>).</li>
   <li><b>Input line</b>: type to talk, <code>/</code> for commands. Matches show up above it as you type: <kbd>↑</kbd> <kbd>↓</kbd> pick one, <kbd>Tab</kbd> completes.</li>
 </ul>
 
 <figure class="shot"><a href="img/chat-rose-pine.png" target="_blank" rel="noopener"><img width="1718" height="960" src="img/chat-rose-pine.png" alt="The iSekur screen in the Rosé Pine theme" loading="lazy"></a><figcaption>Top to bottom: topic bar, tabs, chat with the "new" marker and the nicklist, status bar, input line (Rosé Pine theme)</figcaption></figure>
+<h3 id="layout">Tabs and nicklist on the side you like</h3>
+<p>The tab bar can leave the top and become a tree down the left or right side, like the webchat's tab list: each network with its channels and private chats under it, the tab numbers and the activity colors. It's all in <code>/set</code> → Look, and changes as you set it:</p>
+<ul>
+  <li><code>/set tab_bar left</code> or <code>right</code> (<code>top</code> is the default). Clicks, the right click menus, dragging a tab to move it and folding a network work as on top; the wheel scrolls the list and the tab you're in stays in view.</li>
+  <li><code>/set nicklist_side left</code> puts the user list at the left of the chat (<code>right</code> is the default), in each <code>/split</code> pane too.</li>
+  <li><code>/set tab_bar_width 24</code> and <code>/set nicklist_width 22</code> set their widths in columns, or drag their <code>│</code> edge with the mouse (saved when you let go). Left empty they follow the theme's <code>[layout]</code>: 20 and 18 in the shipped themes.</li>
+  <li>On a window too narrow for the chat to keep 40 columns beside it, the tabs go back on top until it's wider.</li>
+</ul>
+<figure class="shot"><a href="img/doc-layout.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-layout.png" alt="iSekur with the tabs as a tree down the left side" loading="lazy"></a><figcaption><code>/set tab_bar left</code>: the networks and their channels down the side (Tokyo Night theme)</figcaption></figure>
 <div class="duo"><figure class="shot"><a href="img/doc-list.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-list.png" alt="The channel list table" loading="lazy"></a><figcaption><code>/list</code> opens a sortable table: double click a channel to join. The status bar shows CPU, memory and load (<code>/statusbar</code>)</figcaption></figure><figure class="shot"><a href="img/doc-whois.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-whois.png" alt="A whois reply" loading="lazy"></a><figcaption><code>/whois</code> answers in a box, in the tab you asked from</figcaption></figure></div>
 <h2 id="keys">Keys</h2>
 <table>
@@ -260,7 +269,8 @@ man isekur</pre>
 
 <h2 id="mouse">Mouse</h2>
 <ul>
-  <li>Click tabs, activity numbers and nicks. The wheel scrolls the chat and the nicklist. Dragging copies the text, through OSC 52.</li>
+  <li>Click tabs, activity numbers and nicks. The wheel scrolls the chat, the nicklist and the side tab list. Dragging copies the text, through OSC 52.</li>
+  <li>Drag a tab onto another to move it there (a network with all its channels). Drag the <code>│</code> edge of the side tab list or the nicklist to make it wider or narrower (<a href="#layout">layout</a>).</li>
   <li><b>Right click a nick</b>: query, whois, CTCPs, ignore, plus op / voice / kick / ban when your rank allows, and kill / G-line for IRC operators.</li>
   <li><b>Right click a channel tab</b>: quiet mode, clear, add to or remove from autojoin, turn on E2E, close.</li>
   <li><b>Right click a server tab</b>: connect, reconnect or disconnect, fold its channels, connect at startup, close.</li>
@@ -420,7 +430,8 @@ palette = #ff6b6b #ffa94d #ffd43b #a9e34b #69db7c #38d9a9 #3bc9db #4dabf7 #748ff
 
 [layout]
 nicklist       = on
-nicklist_width = 18
+nicklist_width = 18          <span class="c"># /set nicklist_width beats it</span>
+tab_bar_width  = 20          <span class="c"># the tab list's, with /set tab_bar left or right</span>
 nick_width     = 12          <span class="c"># mirc: 0, with nick_brackets = &lt;&gt; for inline &lt;nicks&gt;</span>
 separator      = │
 timestamp      = %H:%M
