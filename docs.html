@@ -237,12 +237,14 @@ man isekur</pre>
 <tr><th>Key</th><th>Action</th></tr>
 <tr><td><kbd>F1</kbd>, <kbd>Alt+K</kbd>, <code>/keys</code></td><td>All the keys in a window, drawn as keycaps by group, your own <code>[keys]</code> included (terminal and webchat)</td></tr>
 <tr><td><kbd>Alt+1</kbd>…<kbd>9</kbd>, <kbd>Alt+0</kbd></td><td>Go to tab 1–10</td></tr>
-<tr><td><kbd>Alt+←</kbd> <kbd>Alt+→</kbd>, <kbd>Ctrl+P</kbd> <kbd>Ctrl+N</kbd></td><td>Previous / next tab</td></tr>
+<tr><td><kbd>Alt+↑</kbd> <kbd>Alt+↓</kbd>, <kbd>Ctrl+P</kbd> <kbd>Ctrl+N</kbd></td><td>Previous / next tab</td></tr>
+<tr><td><kbd>Alt+←</kbd> <kbd>Alt+→</kbd></td><td>Previous / next server tab, or a tab of no network (cmd, shells)</td></tr>
 <tr><td><kbd>Ctrl+A</kbd>, <kbd>Alt+A</kbd></td><td>Next tab with activity</td></tr>
+<tr><td><kbd>Ctrl+R</kbd>, <kbd>Alt+R</kbd>, <kbd>Cmd+R</kbd></td><td>Mark every tab read</td></tr>
 <tr><td><kbd>Alt+D</kbd>, <kbd>Ctrl+Z</kbd></td><td>Detach: iSekur keeps running in the background</td></tr>
-<tr><td><kbd>Ctrl+X</kbd></td><td>Next server</td></tr>
+<tr><td><kbd>Ctrl+X</kbd>, <kbd>Alt+X</kbd></td><td>Next server</td></tr>
 <tr><td><kbd>Ctrl+G</kbd>, <kbd>Alt+J</kbd></td><td>Find a tab: type part of a channel, nick or network name, then Enter</td></tr>
-<tr><td><kbd>Ctrl+W</kbd></td><td>Close the tab (parts the channel)</td></tr>
+<tr><td><kbd>Ctrl+W</kbd>, <kbd>Alt+W</kbd></td><td>Close the tab (parts the channel)</td></tr>
 <tr><td><kbd>PgUp</kbd> <kbd>PgDn</kbd></td><td>Scroll</td></tr>
 <tr><td><kbd>Ctrl+L</kbd>, <kbd>Alt+L</kbd>, <kbd>F2</kbd></td><td>Show / hide the nicklist</td></tr>
 <tr><td><kbd>Ctrl+T</kbd>, <kbd>Alt+T</kbd></td><td>Show / hide the topic bar</td></tr>
@@ -250,10 +252,11 @@ man isekur</pre>
 <tr><td><kbd>Tab</kbd></td><td>Complete a command, a <code>/help</code> topic, a <code>/set</code> key or a nick</td></tr>
 <tr><td><kbd>Home</kbd> <kbd>End</kbd>, <kbd>Ctrl+E</kbd>, <kbd>Ctrl+U</kbd> <kbd>Ctrl+K</kbd></td><td>Start / end of line, delete to start / end</td></tr>
 <tr><td><kbd>Alt+Backspace</kbd></td><td>Delete the previous word</td></tr>
+<tr><td><kbd>Alt+C</kbd>, or drag over the input line</td><td>Copy the input line, or the part dragged over (held at an end, the drag scrolls the line)</td></tr>
 <tr><td><kbd>Ctrl+B</kbd> <kbd>C</kbd> <kbd>O</kbd> <kbd>V</kbd> <kbd>]</kbd> <kbd>_</kbd></td><td>mIRC formatting: bold, color, reset, reverse, italic, underline</td></tr>
 </table>
 <div class="duo"><figure class="shot"><a href="img/doc-suggest.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-suggest.png" alt="Live command suggestions above the input line" loading="lazy"></a><figcaption>Typing a command lists what fits, with its arguments: <kbd>↑</kbd> <kbd>↓</kbd> pick, <kbd>Tab</kbd> completes</figcaption></figure><figure class="shot"><a href="img/doc-find.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-find.png" alt="The tab finder" loading="lazy"></a><figcaption><kbd>Ctrl+G</kbd> finds a tab by part of its name, Enter goes there</figcaption></figure></div>
-<p>On a Mac, Option works as Alt (Option+D detaches). Rebind any action in the <code>[keys]</code> section: <code>M-</code> is Alt, <code>C-</code> Ctrl, <code>D-</code> Cmd. See <a href="#set-keys">[keys]</a>.</p>
+<p>The Alt keys are the same in the terminal and the webchat. On a Mac, Option is Alt once the terminal sends it as one: if Option+A types <code>å</code>, see <a href="#trouble-alt">Alt / Option keys don't work</a>. Rebind any action in the <code>[keys]</code> section: <code>M-</code> is Alt, <code>C-</code> Ctrl, <code>D-</code> Cmd. See <a href="#set-keys">[keys]</a>.</p>
 
 <h2 id="mouse">Mouse</h2>
 <ul>
@@ -312,7 +315,7 @@ password_hash = pbkdf2$sha256$...</pre>
 <ul>
   <li><b>+</b> adds a server, <b>⚙</b> edits every setting in place (Apply, or Apply &amp; save), <b>ⓘ</b> is <code>/about</code>, and the server-rack button manages servers.</li>
   <li><b>⇅ Files</b> downloads what's in <code>dcc_dir</code> to your own computer when <code>dcc_web = on</code>, seedbox style.</li>
-  <li>Your <code>[keys]</code> work too. Alt+W closes a tab and Alt+X goes to the next server, since browsers keep Ctrl+W and Ctrl+X.</li>
+  <li>The keys are the terminal's Alt keys, and your <code>[keys]</code> work too. Use Alt+W, Alt+X and Alt+R, since browsers keep Ctrl+W, Ctrl+X and Ctrl+R.</li>
   <li>With <code>/lock on</code>, the webchat asks for the lock password too.</li>
 </ul>
 
@@ -588,8 +591,8 @@ end)</pre>
 <p><code>man isekur</code> has all of this offline.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
-<h3>Alt / Option keys don't work</h3>
-<p>On a Mac, set the terminal to use Option as Meta (Terminal: Profiles → Keyboard; iTerm2: Profiles → Keys → Left Option key: Esc+). Some terminals bind Alt combinations themselves: in Ghostty, a <code>keybind = alt+…</code> in its config eats that key before iSekur sees it. Every action also has a Ctrl key or a command (<code>/detach</code>, <code>/win 3</code>), and you can rebind them in <code>[keys]</code>.</p>
+<h3 id="trouble-alt">Alt / Option keys don't work</h3>
+<p>On a Mac, set the terminal to send Option as Alt (Ghostty: <code>macos-option-as-alt = left</code>; Terminal: Profiles → Keyboard → Use Option as Meta key; iTerm2: Profiles → Keys → Left Option key: Esc+). Right Option then still types symbols like <code>å</code> and <code>ß</code>. iSekur tells you once when Option+letter types a symbol instead. Some terminals bind Alt combinations themselves: in Ghostty, a <code>keybind = alt+…</code> in its config eats that key before iSekur sees it. Every action also has a Ctrl key or a command (<code>/detach</code>, <code>/win 3</code>), and you can rebind them in <code>[keys]</code>.</p>
 <h3>Colors look off</h3>
 <p><code>colors = auto</code> uses true color when <code>$COLORTERM</code> says so. Over SSH or in tmux that variable is often lost: set <code>colors = truecolor</code> if your terminal supports it, or <code>colors = 256</code> if it doesn't. In tmux, add <code>set -ga terminal-overrides ",*:RGB"</code>.</p>
 <h3>iSekur stops when I log out of a server</h3>
