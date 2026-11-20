@@ -75,10 +75,33 @@ def click_nick(nick, button=2):  # SGR mouse report on the nick in the user list
         if x >= 0: break
     tmux("send-keys", "-t", "s", "-l", f"\x1b[<{button};{x + 2};{y + 1}M\x1b[<{button};{x + 2};{y + 1}m"); time.sleep(0.4)
 
+def seed_logs():  # the days before today in the log folder, so /logs has a tree, days and something to search
+    d = "/tmp/iskshot/logs/sekurnet"; os.makedirs(d, exist_ok=True)
+    talk = [("morpheus", "morning all, coffee is on"), ("tank", "pushed the webchat fix for the phone layout"),
+            ("niobe", "does the webchat keep the tabs in sync with the terminal?"), ("neo", "yes, same session, it is the same iSekur"),
+            ("switch", "CI is green on linux, macos and freebsd"), ("apoc", "who is on the release notes today?"),
+            ("morpheus", "I am, after lunch"), ("dozer", "the new themes look great in the webchat too"),
+            ("neo", "/grep finds anything in the scrollback, /logs finds it on disk"), ("mouse", "nice, I will try the log browser tonight"),
+            ("trinity", "see you all tomorrow")]
+    t0 = time.time()
+    for back, name, who in [(1, "#isekur", 0), (2, "#isekur", 1), (3, "#isekur", 2), (5, "#isekur", 3), (8, "#isekur", 4), (13, "#isekur", 5),
+                            (1, "#linux", 0), (4, "#linux", 2), (2, "#retro", 1), (1, "morpheus", 0), (6, "morpheus", 2)]:
+        day = time.strftime("%Y-%m-%d", time.localtime(t0 - back * 86400))
+        rows = [f"--- Log opened {day} 08:55:10"]
+        ts = 9 * 3600 + 60 * (7 * who % 40)
+        for i, (n, text) in enumerate(talk[who % 3: who % 3 + 8]):
+            ts += 130 + 71 * i
+            hh, mm, ss = ts // 3600, ts % 3600 // 60, ts % 60
+            if name.startswith("#") and i == 2:
+                rows.append(f"{day} {hh:02}:{mm:02}:{ss:02} -!- {n} (~{n}@127.0.0.1) has joined {name}")
+            rows.append(f"{day} {hh:02}:{mm:02}:{ss + 1 if ss < 59 else ss:02} <{n}> {text}")
+        if name.startswith("#"): rows.append(f"{day} 17:20:44 -!- apoc (~apoc@127.0.0.1) has quit (Ping timeout)")
+        open(f"{d}/{name}.{day}.log", "w").write("\n".join(rows) + "\n")
+
 def stop():
     typ("/exit -y"); time.sleep(0.8); tmux("kill-server"); time.sleep(0.3)
 
-def start(theme, rows, web=False, extra=""):
+def start(theme, rows, web=False, extra="", logon="off"):
     d = "/tmp/iskshot"; os.makedirs(d, exist_ok=True)
     open(f"{d}/isekur.conf", "w").write(f"""[general]
 nick = neo
@@ -88,7 +111,7 @@ theme = {theme}
 colors = truecolor
 show_guide = off
 check_updates = off
-log = off
+log = {logon}
 keep_history = off
 banner_anim = off
 flood_interval_ms = 0
@@ -142,8 +165,10 @@ elif mode == "ui":
 elif mode == "docs":
     start("tokyonight", 24); chat()
     keys("M-1"); cap("doc-welcome")
+    tmux("resize-window", "-t", "s", "-y", "16"); time.sleep(0.5)  # these two sit side by side on the page: a short window, no empty chat above the table
     keys("M-2"); typ("/list"); time.sleep(1); cap("doc-list"); keys("Escape")
     keys("M-3"); typ("/whois morpheus"); time.sleep(0.6); cap("doc-whois")
+    tmux("resize-window", "-t", "s", "-y", "24"); time.sleep(0.5)
     tmux("send-keys", "-t", "s", "-l", "/se"); cap("doc-suggest"); keys("C-u"); keys("Escape")
     keys("C-g"); tmux("send-keys", "-t", "s", "-l", "li"); cap("doc-find"); keys("Escape"); keys("Escape")
     click_nick("morpheus"); cap("doc-nickmenu"); keys("Escape")
@@ -152,8 +177,23 @@ elif mode == "docs":
     typ("/shell"); time.sleep(0.5); typ("neo"); tmux("send-keys", "-t", "s", "-l", "secret12"); cap("doc-shell-login"); keys("Escape")
     keys("M-3"); typ("/lock"); time.sleep(0.4); typ("shot"); time.sleep(0.6); typ("shot"); time.sleep(1); cap("doc-lock"); typ("shot"); time.sleep(0.5)
     typ("/exit -y"); time.sleep(0.5); typ("shot"); time.sleep(0.8); tmux("kill-server")
-elif mode == "layout":  # tab_bar = left: the tabs as a tree down the side
-    start("tokyonight", 24, extra="tab_bar = left\n"); chat(); cap("doc-layout"); stop()
+elif mode == "windows":  # the core windows: /servers (and its login picker), /logs, /keys, /bans
+    seed_logs()
+    start("tokyonight", 26, logon="on"); chat()
+    for mask in ("troll!*@*", "*!*@spam.example.net", "bot*!*@*"):
+        m.send(f"MODE #isekur +b {mask}"); time.sleep(0.2)
+    pump(); keys("M-3"); typ("/bans"); time.sleep(1); cap("doc-bans"); keys("Escape")
+    keys("F1"); time.sleep(0.8); cap("doc-keys"); keys("Escape")
+    for k, v in (("host", "irc.sekurnet.org"), ("port", "6697"), ("tls", "true")): typ(f"/set server.sekurnet.{k} {v}")  # what a reader has, not the scratch proxy (they apply at the next connect)
+    typ("/save"); keys("M-3"); typ("/servers"); time.sleep(0.8); cap("doc-servers"); keys("q")
+    keys("M-2"); typ("/clear"); tmux("resize-window", "-t", "s", "-y", "12"); time.sleep(0.5)  # the login picker (l) opens over the server's tab: a short window around it
+    typ("/servers"); time.sleep(0.6); keys("l"); time.sleep(0.6); cap("doc-login"); keys("Escape"); keys("Escape")
+    tmux("resize-window", "-t", "s", "-y", "26"); time.sleep(0.5)
+    keys("M-3"); typ("/logs"); time.sleep(1.2); cap("doc-logs")
+    keys("Tab"); keys("Up"); keys("/"); tmux("send-keys", "-t", "s", "-l", "webchat"); time.sleep(0.4); keys("Enter"); time.sleep(1.2); cap("doc-logs-find"); keys("Escape")
+    stop()
+elif mode == "layout":  # tab_bar_position = left: the tabs as a tree down the side
+    start("tokyonight", 24, extra="tab_bar_position = left\n"); chat(); cap("doc-layout"); stop()
 elif mode == "web":
     start("rose-pine", 22, web=True); secret(); chat()
     print("READY", flush=True)
