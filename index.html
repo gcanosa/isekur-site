@@ -425,7 +425,8 @@ footer a{color:var(--muted);text-decoration:underline}
     </div>
     <p class="dlnote">Windows: unzip and run <code>isekur.cmd</code>. It can't do <code>/shell</code> or detach; for everything use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
   </div>
-  <div class="panel" id="p-src" hidden><pre class="sh"><span class="c"># needs a C++17 compiler, GNU make, OpenSSL 1.1+/LibreSSL and PAM</span>
+  <div class="panel" id="p-src" hidden><pre class="sh"><span class="c"># needs a C++17 compiler, GNU make, OpenSSL 1.1+/LibreSSL and PAM, with their headers</span>
+<span class="c"># Debian/Ubuntu/WSL: sudo apt install build-essential libssl-dev libpam0g-dev</span>
 <span class="p">$ </span>git clone https://github.com/gcanosa/iSekur && cd iSekur
 <span class="p">$ </span>make                <span class="c"># gmake on *BSD</span>
 <span class="p">$ </span>sudo make install   <span class="c"># /usr/local</span></pre></div>
