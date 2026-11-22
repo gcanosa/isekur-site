@@ -37,9 +37,9 @@ pre{background:#06050c;border:1px solid var(--line);border-radius:12px;padding:1
 pre .c{color:#6b6790}
 nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:#0b0a14d0;border-bottom:1px solid #ffffff0f}
 nav .in{display:flex;align-items:center;gap:22px;height:58px;max-width:1280px;margin:0 auto;padding:0 16px}
-.logo{font:800 20px var(--mono);color:var(--fg)!important}
-.logo b{color:var(--pink)}
-.logo small{font:500 13px var(--mono);color:var(--muted);margin-left:8px}
+.logo{display:inline-flex;align-items:center;gap:12px}
+.logo .mark{display:block}
+.logo small{font:500 15px var(--mono);color:var(--muted)}
 nav .links{margin-left:auto;display:flex;gap:18px;font-size:15px}
 nav .links a{color:var(--muted)}
 #menu{display:none;margin-left:auto;font:600 14px var(--mono);background:#ffffff0d;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
@@ -139,7 +139,7 @@ figure.shot figcaption code{font-size:.9em}
 <body>
 
 <nav><div class="in">
-  <a class="logo" href="./">i<b>Sekur</b><small>docs</small></a>
+  <a class="logo" href="./" aria-label="iSekur docs" title="iSekur"><img class="mark" src="img/logo-40.png" srcset="img/logo-80.png 2x, img/logo-120.png 3x" width="40" height="40" alt=""><small>docs</small></a>
   <div class="links">
     <a href="./">Home</a>
     <a href="#guide">Guide</a>

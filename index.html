@@ -66,8 +66,8 @@ code{font-size:.88em;background:#ffffff0d;border:1px solid var(--line);padding:.
 /* nav */
 nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:#0b0a14b8;border-bottom:1px solid #ffffff0f}
 nav .wrap{display:flex;align-items:center;gap:22px;height:58px}
-.logo{font:800 20px var(--mono);color:var(--fg);letter-spacing:-.5px}
-.logo b{color:var(--pink)}
+.logo{display:inline-flex;align-items:center}
+.logo .mark{display:block}
 nav .links{display:flex;gap:20px;margin-left:auto;font-size:15px}
 nav .links a{color:var(--muted)}
 nav .links a:hover{color:var(--fg);text-decoration:none}
@@ -226,7 +226,7 @@ footer a{color:var(--muted);text-decoration:underline}
 <body>
 
 <nav><div class="wrap">
-  <a class="logo" href="#">i<b>Sekur</b></a>
+  <a class="logo" href="#" aria-label="iSekur" title="iSekur"><img class="mark" src="img/logo-40.png" srcset="img/logo-80.png 2x, img/logo-120.png 3x" width="40" height="40" alt=""></a>
   <div class="links">
     <a href="#features">Features</a>
     <a href="#themes">Themes</a>
