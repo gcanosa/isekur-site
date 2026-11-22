@@ -76,7 +76,14 @@ nav .links a:hover{color:var(--fg);text-decoration:none}
 @media (max-width:760px){nav .links a:not(.gh){display:none}}
 
 /* hero */
-.hero{padding:84px 0 40px;text-align:center}
+.hero{padding:72px 0 40px;text-align:center}
+.hero-top{--hl:clamp(230px,32vw,410px);padding:0 16px;display:grid;grid-template-columns:var(--hl) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:center;text-align:left;margin-top:26px}
+.hero-logo{width:100%;height:auto;display:block}
+.hero-text h1{margin:0 0 10px;font-size:clamp(52px,8.4vw,112px);letter-spacing:-3px}
+.hero-text .tag{margin:0;max-width:620px}
+.hero-text .cta{justify-content:flex-start;margin:26px 0 8px}
+.hero-text .copy{margin:16px 0 0}
+@media (max-width:860px){.hero-top{--hl:min(250px,62vw);grid-template-columns:minmax(0,1fr);text-align:center}.hero-logo{width:var(--hl);justify-self:center}.hero-text .tag{margin:0 auto}.hero-text .cta{justify-content:center}.hero-text .copy{margin:16px auto 0}}
 .badge{display:inline-flex;gap:8px;align-items:center;font:500 13px var(--mono);color:var(--muted);border:1px solid var(--line);background:#ffffff08;padding:5px 12px;border-radius:999px}
 .badge i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
 h1{font:800 clamp(56px,11vw,124px)/1 var(--mono);letter-spacing:-4px;margin:22px 0 8px;
@@ -241,14 +248,19 @@ footer a{color:var(--muted);text-decoration:underline}
 
 <header class="hero wrap">
   <span class="badge"><i></i><span id="ver">latest release</span> · GPL-3.0 · C++17</span>
-  <h1>iSekur<span class="sr"> — open source terminal IRC client</span><span class="cur"></span></h1>
-  <p class="tag">A small, <em>very colorful</em> terminal IRC client. Your live session opens in a browser too.</p>
-  <div class="cta">
-    <a class="btn primary" href="#install">Get iSekur →</a>
-    <a class="btn" href="docs.html">Read the docs</a>
-    <a class="btn" href="https://github.com/gcanosa/iSekur">Source on GitHub</a>
+  <div class="hero-top">
+    <img class="hero-logo" src="img/hero-logo-410.webp" srcset="img/hero-logo-820.webp 2x" width="410" height="410" fetchpriority="high" decoding="async" alt="iSekur logo: a terminal window, a globe and a chat bubble around the letters iS">
+    <div class="hero-text">
+    <h1>iSekur<span class="sr"> — open source terminal IRC client</span><span class="cur"></span></h1>
+    <p class="tag">A small, <em>very colorful</em> terminal IRC client. Your live session opens in a browser too.</p>
+    <div class="cta">
+      <a class="btn primary" href="#install">Get iSekur →</a>
+      <a class="btn" href="docs.html">Read the docs</a>
+      <a class="btn" href="https://github.com/gcanosa/iSekur">Source on GitHub</a>
+    </div>
+    <div class="copy"><span id="brew">brew install gcanosa/isekur/isekur</span><button data-copy="brew">copy</button></div>
+    </div>
   </div>
-  <div class="copy"><span id="brew">brew install gcanosa/isekur/isekur</span><button data-copy="brew">copy</button></div>
 
   <div class="stage">
     <div class="term" id="term">
