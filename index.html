@@ -301,7 +301,7 @@ footer a{color:var(--muted);text-decoration:underline}
     <div class="card" style="--c:#ffcb6b"><span class="ic">webchat</span><h3>Your session in a browser</h3><p>The same live session on your phone, installable as an app.</p></div>
     <div class="card" style="--c:#c792ea"><span class="ic">🔒 e2e</span><h3>Encrypted chats</h3><p>Queries and channels only the people with the password can read.</p></div>
     <div class="card" style="--c:#9ece6a"><span class="ic">IRCv3</span><h3>Modern IRC</h3><p>TLS, SASL, chat history, replies, reactions and typing.</p></div>
-    <div class="card" style="--c:#ff9e64"><span class="ic">/shell</span><h3>A terminal in a tab</h3><p>vim, top and ssh in a tab, behind your login.</p></div>
+    <div class="card" style="--c:#ff9e64"><span class="ic">/bnc</span><h3>A bouncer built in</h3><p>irssi, WeeChat or a phone app share your session.</p></div>
   </div>
   <p style="margin-top:18px">And <code>/split</code> to follow two channels at once, tabs on top or as a tree at the side, op tools, DCC, Twitch, scripts, aliases, mouse support… <a href="docs.html">all in the docs →</a></p>
 </section>
@@ -336,7 +336,7 @@ footer a{color:var(--muted);text-decoration:underline}
 <span class="p">$ </span>isekur --attach     <span class="c"># from this or any other terminal</span>
 <span class="p">$ </span>isekur --daemon     <span class="c"># headless; attach later</span>
 <span class="p">$ </span>isekur --list       <span class="c"># what's running, and how to attach</span>
-  <span class="c">/attach host        # another machine's iSekur, in a tab</span></pre>
+<span class="p">$ </span>ssh -t host isekur --attach <span class="c"># another machine's</span></pre>
   </div>
 </section>
 
@@ -401,7 +401,6 @@ footer a{color:var(--muted);text-decoration:underline}
       <tr><td>Built-in BNC for other IRC clients</td><td class="me y">✓</td><td>relay</td><td>proxy module</td><td>—</td><td>—</td><td>—</td></tr>
       <tr><td>End-to-end encryption</td><td class="me y">✓</td><td>script</td><td>plugin</td><td>plugin</td><td>DLL</td><td>—</td></tr>
       <tr><td>IRCv3, drafts included</td><td class="me y">✓</td><td>some</td><td>some</td><td>—</td><td>some</td><td>some</td></tr>
-      <tr><td>A shell tab</td><td class="me y">✓</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
       <tr><td>Live theme picker</td><td class="me y">✓</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="y">✓</td></tr>
       <tr><td>Open source, maintained</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td>archived</td><td>shareware</td><td class="y">✓</td></tr>
     </tbody>
@@ -438,10 +437,10 @@ footer a{color:var(--muted);text-decoration:underline}
       <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-windows-x86_64.zip"><svg class="os"><use href="#os-windows"/></svg>Windows<small><span class="pill x64"><svg class="arch"><use href="#arch-chip"/></svg>x86_64</span>Cygwin build</small></a>
       <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-src.tar.gz"><svg class="os"><use href="#os-src"/></svg>Source<small>tar.gz</small></a>
     </div>
-    <p class="dlnote">Windows: unzip and run <code>isekur.cmd</code>. It can't do <code>/shell</code> or detach; for everything use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
+    <p class="dlnote">Windows: unzip and run <code>isekur.cmd</code>. It can't detach; for everything use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
   </div>
-  <div class="panel" id="p-src" hidden><pre class="sh"><span class="c"># needs a C++17 compiler, GNU make, OpenSSL 1.1+/LibreSSL and PAM, with their headers</span>
-<span class="c"># Debian/Ubuntu/WSL: sudo apt install build-essential libssl-dev libpam0g-dev</span>
+  <div class="panel" id="p-src" hidden><pre class="sh"><span class="c"># needs a C++17 compiler, GNU make and OpenSSL 1.1+/LibreSSL with its headers</span>
+<span class="c"># Debian/Ubuntu/WSL: sudo apt install build-essential libssl-dev</span>
 <span class="p">$ </span>git clone https://github.com/gcanosa/iSekur && cd iSekur
 <span class="p">$ </span>make                <span class="c"># gmake on *BSD</span>
 <span class="p">$ </span>sudo make install   <span class="c"># /usr/local</span></pre></div>

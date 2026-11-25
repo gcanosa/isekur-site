@@ -174,7 +174,6 @@ elif mode == "docs":
     click_nick("morpheus"); cap("doc-nickmenu"); keys("Escape")
     typ("/help server"); cap("doc-help-server")
     secret(); cap("doc-e2e")
-    typ("/shell"); time.sleep(0.5); typ("neo"); tmux("send-keys", "-t", "s", "-l", "secret12"); cap("doc-shell-login"); keys("Escape")
     keys("M-3"); typ("/lock"); time.sleep(0.4); typ("shot"); time.sleep(0.6); typ("shot"); time.sleep(1); cap("doc-lock"); typ("shot"); time.sleep(0.5)
     typ("/exit -y"); time.sleep(0.5); typ("shot"); time.sleep(0.8); tmux("kill-server")
 elif mode == "windows":  # the core windows: /servers (and its login picker), /logs, /keys, /bans

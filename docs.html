@@ -199,9 +199,9 @@ brew upgrade isekur <span class="c"># later: update to the latest release</span>
 <p>The links always point at the newest release: <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-macos-arm64.tar.gz">macOS (Apple silicon)</a>, <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz">Linux x86_64</a>, <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-arm64.tar.gz">Linux arm64</a> (both Linux packages need libssl3) and <a href="https://github.com/gcanosa/iSekur/releases/latest/download/isekur-windows-x86_64.zip">Windows x86_64</a>.</p>
 <pre>curl -L https://github.com/gcanosa/iSekur/releases/latest/download/isekur-linux-x86_64.tar.gz | tar xz
 sudo isekur-linux-x86_64/install.sh     <span class="c"># installs to /usr/local</span></pre>
-<p>On Windows, unzip the package anywhere and run <code>isekur.cmd</code> in Windows Terminal. It is a Cygwin build with the DLLs it needs inside, so there is nothing to install and Cygwin isn't needed. It is newer and less tried than the others, and Cygwin has no PAM and can't pass a terminal over a unix socket, so it has no <code>/shell</code> and no detach and attach. Your settings go to <code>%USERPROFILE%\.config\isekur</code>, so replacing the folder with a newer one keeps them. For all of iSekur on Windows, use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
+<p>On Windows, unzip the package anywhere and run <code>isekur.cmd</code> in Windows Terminal. It is a Cygwin build with the DLLs it needs inside, so there is nothing to install and Cygwin isn't needed. It is newer and less tried than the others, and Cygwin can't pass a terminal over a unix socket, so it has no detach and attach. Your settings go to <code>%USERPROFILE%\.config\isekur</code>, so replacing the folder with a newer one keeps them. For all of iSekur on Windows, use <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> with the Linux package.</p>
 <h3>From source</h3>
-<p>Needs a C++17 compiler, GNU make, OpenSSL 1.1+ or LibreSSL with its headers, and PAM. On Debian and Ubuntu (WSL too): <code>sudo apt install build-essential libssl-dev libpam0g-dev</code>. On Fedora: <code>sudo dnf install gcc-c++ make openssl-devel pam-devel</code>. termbox2 and libvterm are included. Every push is built and tested on macOS, Linux (glibc and Alpine's musl), FreeBSD, OpenBSD, NetBSD and Cygwin. On the BSDs, install GNU make first: <code>pkg install gmake</code> on FreeBSD, <code>pkg_add gmake</code> on NetBSD, <code>pkg_add gmake libiconv</code> on OpenBSD. OpenBSD has no PAM, so it builds without the <code>/shell</code> login and has everything else.</p>
+<p>Needs a C++17 compiler, GNU make, and OpenSSL 1.1+ or LibreSSL with its headers. On Debian and Ubuntu (WSL too): <code>sudo apt install build-essential libssl-dev</code>. On Fedora: <code>sudo dnf install gcc-c++ make openssl-devel</code>. termbox2 and Lua are included. Every push is built and tested on macOS, Linux (glibc and Alpine's musl), FreeBSD, OpenBSD, NetBSD and Cygwin. On the BSDs, install GNU make first: <code>pkg install gmake</code> on FreeBSD, <code>pkg_add gmake</code> on NetBSD, <code>pkg_add gmake libiconv</code> on OpenBSD.</p>
 <pre>git clone https://github.com/gcanosa/iSekur && cd iSekur
 make                <span class="c"># gmake on *BSD; make notwitch leaves Twitch support out</span>
 make test           <span class="c"># optional: checks the build on your system</span>
@@ -228,7 +228,7 @@ man isekur</pre>
 <p>From top to bottom:</p>
 <ul>
   <li><b>Topic bar</b>: the channel topic. Click it to unfold a long one, scroll it sideways with the wheel, and double click it to edit it (when you're allowed to, e.g. as an op on a +t channel). <kbd>Ctrl+T</kbd> hides it.</li>
-  <li><b>Tab bar</b>: one tab per server, channel, private chat, shell and special tab (<code>*guide</code>, <code>*channels</code> from <code>/list</code>). Tab colors show activity: messages, highlights, joins and parts. Right click a server tab to fold its channels away; it shows "+N" instead. Drag a tab onto another to move it there.</li>
+  <li><b>Tab bar</b>: one tab per server, channel, private chat and special tab (<code>*guide</code>, <code>*channels</code> from <code>/list</code>). Tab colors show activity: messages, highlights, joins and parts. Right click a server tab to fold its channels away; it shows "+N" instead. Drag a tab onto another to move it there.</li>
   <li><b>Chat</b> with the <b>nicklist</b> on the right in channels (<kbd>F2</kbd> hides it, <code>/set nicklist_side left</code> moves it to the left). A "new" line marks the first message you missed. The terminal and the webchat share that marker. Joins, parts, quits and nick changes can drown a busy channel: <code>/quiet</code> hides them in one tab, <code>/quiet smart</code> hides them unless that person spoke in the last 5 minutes, and <code>/set join_filter smart</code> makes that the default everywhere. Kicks and your own lines always show.</li>
   <li><b>Status bar</b>: the time, your nick and modes, the tab, lag, <code>[Act: …]</code> with clickable numbers of tabs that have activity, and optionally CPU, memory, load and battery (<code>/statusbar</code>).</li>
   <li><b>Input line</b>: type to talk, <code>/</code> for commands. Matches show up above it as you type: <kbd>↑</kbd> <kbd>↓</kbd> pick one, <kbd>Tab</kbd> completes.</li>
@@ -251,7 +251,7 @@ man isekur</pre>
 <tr><td><kbd>F1</kbd>, <kbd>Alt+K</kbd>, <code>/keys</code></td><td>All the keys in a window, drawn as keycaps by group, your own <code>[keys]</code> included (terminal and webchat)</td></tr>
 <tr><td><kbd>Alt+1</kbd>…<kbd>9</kbd>, <kbd>Alt+0</kbd></td><td>Go to tab 1–10</td></tr>
 <tr><td><kbd>Alt+↑</kbd> <kbd>Alt+↓</kbd>, <kbd>Ctrl+P</kbd> <kbd>Ctrl+N</kbd></td><td>Previous / next tab</td></tr>
-<tr><td><kbd>Alt+←</kbd> <kbd>Alt+→</kbd></td><td>Previous / next server tab, or a tab of no network (cmd, shells)</td></tr>
+<tr><td><kbd>Alt+←</kbd> <kbd>Alt+→</kbd></td><td>Previous / next server tab, or a tab of no network (cmd)</td></tr>
 <tr><td><kbd>Ctrl+A</kbd>, <kbd>Alt+A</kbd></td><td>Next tab with activity</td></tr>
 <tr><td><kbd>Ctrl+R</kbd>, <kbd>Alt+R</kbd>, <kbd>Cmd+R</kbd></td><td>Mark every tab read</td></tr>
 <tr><td><kbd>Alt+D</kbd>, <kbd>Ctrl+Z</kbd></td><td>Detach: iSekur keeps running in the background</td></tr>
@@ -303,12 +303,12 @@ Alt+D / /detach     <span class="c"># back to the shell: still connected, still 
 isekur --attach     <span class="c"># back again, from this or any other terminal or SSH login</span>
 isekur --daemon     <span class="c"># start in the background without attaching</span>
 isekur --list       <span class="c"># the ones running, and the command that attaches each</span>
-/attach host        <span class="c"># inside iSekur: another machine's iSekur, live in a tab (over ssh)</span></pre>
+ssh -t host isekur --attach   <span class="c"># another machine's iSekur, in your terminal</span></pre>
 <p>Closing the terminal or losing the SSH connection detaches too; only <code>/quit</code> really ends it. One terminal is attached at a time.</p>
 <h3>Several sessions</h3>
 <p>Run one per config file: <code>isekur -c ~/.config/isekur/work.conf</code>, then <kbd>Alt+D</kbd> and <code>isekur -c ~/.config/isekur/fun.conf</code>. <code>isekur -c work.conf --attach</code> picks one. Each one uses a socket next to its config, named after it (<code>work.sock</code>), and logs background output to <code>work.log</code>.</p>
 <h3>Another machine</h3>
-<p><code>/attach host</code> runs <code>ssh -t host isekur --attach</code> and shows that iSekur live in a tab. <code>host</code> can be a name, <code>user@host</code> or a <code>Host</code> from <code>~/.ssh/config</code>. Keys go to the remote iSekur except <kbd>Alt+←/→</kbd> and <kbd>Alt+1–9</kbd>, so <kbd>Alt+D</kbd> in that tab detaches it and leaves it running. <code>/attach host config</code> picks one of several there.</p>
+<p><code>ssh -t host isekur --attach</code> shows the iSekur running on another machine in your terminal; <kbd>Alt+D</kbd> there detaches it, leaves it running and ends the ssh session. If ssh doesn't find <code>isekur</code> there (Homebrew on a Mac, for one), go through a login shell: <code>ssh -t host '$SHELL -lc "isekur --attach"'</code>. With several there, <code>isekur -c config --attach</code> picks one and <code>ssh host isekur --list</code> shows which run.</p>
 <div class="tip warn">On Linux servers where systemd kills your processes at logout (<code>KillUserProcesses=yes</code>), run <code>loginctl enable-linger $USER</code> once, or iSekur stops when you log out. Detaching isn't available on Cygwin.</div>
 <p>While nothing is attached, the <a href="#plugins">autoaway plugin</a> marks you away (<code>/plugin install autoaway</code>). On a server with <code>draft/pre-away</code>, <code>/set pre_away on</code> marks you away from the first moment of a reconnect that happens while you're detached, and clears it when you attach. When iSekur joins a channel it catches up on what you missed through IRCv3 chathistory, if the server supports it.</p>
 
@@ -389,7 +389,7 @@ backlog       = 50                  <span class="c"># lines of each tab a client
 /save
 /connect home</pre>
 <p>It gets the IRCv3 the BNC offers: <code>draft/chathistory</code> served from the home iSekur's tabs (history on join and when scrolling up, even on networks without it), <code>message-tags</code> (replies, reactions, typing), <code>echo-message</code>, <code>labeled-response</code>, <code>server-time</code>, <code>batch</code>, <code>away-notify</code>, <code>account-notify</code>, <code>account-tag</code>, <code>chghost</code>, <code>setname</code>, <code>extended-join</code>, <code>multi-prefix</code>, <code>userhost-in-names</code> and <code>invite-notify</code>. Other IRCv3 clients ask for what they know the same way.</p>
-<div class="tip">The BNC and <code>/attach host</code> aren't the same thing. <code>/attach</code> shows the remote iSekur itself in a tab, over ssh, with everything. The BNC lets any IRC client in with its own look, but only what IRC carries: no <code>/set</code>, plugins or log browser.</div>
+<div class="tip">The BNC and attaching over ssh aren't the same thing. <code>ssh -t host isekur --attach</code> shows the remote iSekur itself, with everything. The BNC lets any IRC client in with its own look, but only what IRC carries: no <code>/set</code>, plugins or log browser.</div>
 
 <h2 id="security">Security</h2>
 <h3>Passwords in the config</h3>
@@ -403,9 +403,6 @@ backlog       = 50                  <span class="c"># lines of each tab a client
 <h3>Encrypted channels: /e2e #chan</h3>
 <p><code>/e2e #chan</code> (or "Turn on E2E" in the tab menu) encrypts what you say there. Everyone who typed the same password reads it, marked 🔒 on each line and on the tab. Everyone else sees <code>+iSE</code> noise. There's no handshake, so a wrong password only shows when the others' lines don't open. To drop someone, change the password. For autojoin channels the key (not the password) is saved in <code>e2e_keys</code>, so a restart doesn't ask again.</p>
 <div class="duo"><figure class="shot"><a href="img/doc-e2e.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-e2e.png" alt="An E2E encrypted channel in the terminal" loading="lazy"></a><figcaption>An encrypted channel in the terminal: 🔒 on the tab and every line. cypher has the wrong password</figcaption></figure><figure class="shot"><div class="browser"><div class="bar"><i></i><i></i><i></i><span>https://webchat.sekurnet.org</span></div><a href="img/doc-web-e2e.png" target="_blank" rel="noopener"><img width="1100" height="640" src="img/doc-web-e2e.png" alt="An E2E encrypted channel in the webchat" loading="lazy"></a></div><figcaption>The same channel in the webchat</figcaption></figure></div>
-<h3>A real shell: /shell</h3>
-<p><code>/shell</code> opens your <code>$SHELL</code> as a login shell in a tab, after checking this machine's login and password through PAM (<code>pam_service</code>, default <code>login</code>). vim, top, ssh and Ctrl+C all work. Three wrong logins lock it for a minute. It's never reachable from the webchat or from IRC, only from the terminal iSekur runs in.</p>
-<figure class="shot"><a href="img/doc-shell-login.png" target="_blank" rel="noopener"><img width="1718" height="1028" src="img/doc-shell-login.png" alt="The /shell login dialog" loading="lazy"></a><figcaption><code>/shell</code> asks for this machine's login, checked through PAM</figcaption></figure>
 <h3>Shell commands: /exec</h3>
 <p><code>/exec ls -la</code> (alias <code>/sh</code>) streams the output into the cmd tab. It runs in bash or zsh: your login shell when it is one of them. <code>/exec -o uptime</code> says it in the current channel. Commands are killed after <code>exec_timeout</code> seconds, and the webchat can't run them unless <code>exec_web = on</code>.</p>
 
@@ -570,7 +567,7 @@ end)</pre>
 <tr><td><code>isekur.say(srv, target, text)</code></td><td>says each line of text in a channel or to a nick</td></tr>
 <tr><td><code>isekur.send(srv, line)</code></td><td>sends one raw IRC line</td></tr>
 <tr><td><code>isekur.print(srv, target, text, note)</code></td><td>shows text in that tab only (if there's no such tab, the network's tab, else the main window). <code>note</code> true puts the INFO badge first</td></tr>
-<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>, <code>/exec</code>, <code>/sh</code>, <code>/shell</code> and <code>/attach</code>)</td></tr>
+<tr><td><code>isekur.exec(srv, target, "/cmd ...")</code></td><td>runs a command as if it were typed in that tab (except <code>/plugin</code>, <code>/exec</code> and <code>/sh</code>)</td></tr>
 <tr><td><code>isekur.store_get(key)</code>, <code>isekur.store_set(key, value)</code></td><td>the plugin's own saved strings, kept in <code>&lt;name&gt;.data</code> next to it. <code>nil</code> removes a key. They're written to disk within 5 seconds, and when the plugin is unloaded or iSekur exits</td></tr>
 <tr><td><code>isekur.store_keys()</code></td><td>every key in the store</td></tr>
 <tr><td><code>isekur.active()</code></td><td>the tab you're on: its network (nil for the main window) and its name</td></tr>
